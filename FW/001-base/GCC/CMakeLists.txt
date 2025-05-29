@@ -29,7 +29,7 @@ project(${PROJECT_NAME} C CXX ASM)
 #设置编译选项(采用newlib的nano.specs)
 set(CMAKE_C_FLAGS " ${CMAKE_C_FLAGS} \
 		-Wall \
-		-O2 \
+		-Os \
 		-DGCC_COMPILE=1 \
 		-mthumb \
 		-ffunction-sections \
@@ -43,7 +43,7 @@ set(CMAKE_C_FLAGS " ${CMAKE_C_FLAGS} \
 set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} \
                 -Wall \
 		-fno-rtti \
-		-O2 \
+		-Os \
                 -DGCC_COMPILE=1 \
 		-mthumb \
                 -ffunction-sections \

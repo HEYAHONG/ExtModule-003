@@ -30,6 +30,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "hbox.h"
 
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -50,9 +51,13 @@ int main(void)
     /* Configure the system clock */
     APP_SystemClockConfig();
 
+    //≥ı ºªØhcpprt
+    hcpprt_init();
+
     while (1)
     {
-
+        //hcpprt—≠ª∑
+        hcpprt_loop();
     }
 }
 
@@ -73,11 +78,11 @@ static void APP_SystemClockConfig(void)
     RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_24MHz; /* Configure HSI clock as 24MHz */
     RCC_OscInitStruct.HSEState = RCC_HSE_OFF;                         /* Disable HSE */
     /*RCC_OscInitStruct.HSEFreq = RCC_HSE_16_32MHz;*/
-    RCC_OscInitStruct.LSIState = RCC_LSI_OFF;                         /* Disable LSI */
+    RCC_OscInitStruct.LSIState = RCC_LSI_ON;                          /* Enable LSI */
     RCC_OscInitStruct.LSEState = RCC_LSE_OFF;                         /* Disable LSE */
     /*RCC_OscInitStruct.LSEDriver = RCC_LSEDRIVE_MEDIUM;*/
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_OFF;                     /* Disable PLL */
-    /*RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;*/          /* Select HSI as PLL source */
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;                     /* Disable PLL */
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;          /* Select HSI as PLL source */
     /* Configure oscillators */
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
     {
@@ -86,11 +91,11 @@ static void APP_SystemClockConfig(void)
 
     /* Clock source configuration */
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1; /* Select clock types HCLK, SYSCLK, PCLK1 */
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI; /* Select HSI as the system clock */
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK; /* Select PLLCLK as the system clock */
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;     /* AHB clock not divide */
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;      /* APB clock not divided */
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;      /* APB clock div2 */
     /* Configure clock source */
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
     {
         APP_ErrorHandler();
     }

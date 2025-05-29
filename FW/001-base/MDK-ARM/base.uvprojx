@@ -312,7 +312,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>6</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -416,6 +416,11 @@
               <FileName>syscalls.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\syscalls.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_watchdog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv_watchdog.c</FilePath>
             </File>
           </Files>
         </Group>

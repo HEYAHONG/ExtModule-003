@@ -109,6 +109,39 @@ SECTIONS
     __exidx_end = .;
   } >FLASH
 
+  .HShellCommand :
+  {
+    . = ALIGN(4);
+   PROVIDE ( __hshell_command_start = . );
+   KEEP (*(.HShellCommand))
+   PROVIDE ( __hshell_command_end = . );
+  } >FLASH
+
+  .HRuntimeInit :
+  {
+    . = ALIGN(4);
+   PROVIDE ( __hruntime_init_start = . );
+   KEEP (*(.HRuntimeInit))
+   PROVIDE ( __hruntime_init_end = . );
+  } >FLASH
+
+  .HRuntimeLoop :
+  {
+    . = ALIGN(4);
+   PROVIDE ( __hruntime_loop_start = . );
+   KEEP (*(.HRuntimeLoop))
+   PROVIDE ( __hruntime_loop_end = . );
+  } >FLASH
+
+  .HRuntimeSymbol :
+  {
+    . = ALIGN(4);
+   PROVIDE ( __hruntime_symbol_start = . );
+   KEEP (*(.HRuntimeSymbol))
+   PROVIDE ( __hruntime_symbol_end = . );
+  } >FLASH
+
+
   .preinit_array     :
   {
     PROVIDE_HIDDEN (__preinit_array_start = .);
