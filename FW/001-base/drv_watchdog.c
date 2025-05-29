@@ -1,7 +1,6 @@
 #include "main.h"
 #include "hbox.h"
 
-static IWDG_HandleTypeDef   IwdgHandle= {0};
 static void hw_feed()
 {
 
