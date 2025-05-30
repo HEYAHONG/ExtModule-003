@@ -1,9 +1,10 @@
 #include "main.h"
 #include "hbox.h"
 
+static IWDG_HandleTypeDef   IwdgHandle= {0};
 static void hw_feed()
 {
-
+    HAL_IWDG_Refresh(&IwdgHandle);
 };
 static void sys_reset()
 {
@@ -19,6 +20,12 @@ void  hwatchdog_init(const hruntime_function_t *func)
 {
     hwatchdog_set_hardware_dog_feed(hw_feed);
     hwatchdog_setup_software_dog(sys_reset,sys_tick_ms);
+    IwdgHandle.Instance = IWDG;                        /* IWDG */
+    IwdgHandle.Init.Prescaler = IWDG_PRESCALER_256;    /* Prescaler DIV 256 */
+    IwdgHandle.Init.Reload = (1024);                   /* IWDG Reload value 1024, 1024/(32768/256)=8 */
+    HAL_IWDG_Init(&IwdgHandle);
+    __HAL_DBGMCU_FREEZE_IWDG();                        /* can be removed in the product */
+
 }
 HRUNTIME_INIT_EXPORT(watchdog,0,hwatchdog_init,NULL);
 #endif
