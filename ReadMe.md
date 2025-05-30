@@ -8,6 +8,12 @@
 
 注意:本扩展模块一般不直接使用，一般直接嵌入实际电路设计中
 
+# 数据手册
+
+- [XL2409 规格书v1.2a.pdf](Doc/XL2409 规格书v1.2a.pdf)
+- [XL2400P规格书V1.0a 1.pdf](Doc/XL2400P规格书V1.0a 1.pdf)
+- [XL2400P_Register Map_V1.1.pdf](Doc/XL2400P_Register Map_V1.1.pdf)
+
 # 目录结构
 
 - [FW](FW):固件设计，主要为模块MCU固件代码。
