@@ -422,6 +422,11 @@
               <FileType>1</FileType>
               <FilePath>..\drv_watchdog.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_softspi_xl2400p.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv_softspi_xl2400p.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
