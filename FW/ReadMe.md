@@ -7,6 +7,12 @@ XL2409可看作MCU与[XL2400P](https://www.xinlinggo.com/pd.jsp?id=42)通过SIP�
 - 64K Flash
 - 8K SRAM
 
+# 数据手册
+
+- [XL2409 规格书v1.2a.pdf](../Doc/XL2409 规格书v1.2a.pdf)
+- [XL2400P规格书V1.0a 1.pdf](../Doc/XL2400P规格书V1.0a 1.pdf)
+- [XL2400P_Register Map_V1.1.pdf](../Doc/XL2400P_Register Map_V1.1.pdf)
+
 # 工具
 
 主要使用的操作系统:
