@@ -10,9 +10,11 @@
 
 # 数据手册
 
-- [XL2409 规格书v1.2a.pdf](Doc/XL2409 规格书v1.2a.pdf)
-- [XL2400P规格书V1.0a 1.pdf](Doc/XL2400P规格书V1.0a 1.pdf)
-- [XL2400P_Register Map_V1.1.pdf](Doc/XL2400P_Register Map_V1.1.pdf)
+文件见[Doc](Doc)。
+
+- XL2409 规格书v1.2a.pdf
+- XL2400P规格书V1.0a 1.pdf
+- XL2400P_Register Map_V1.1.pdf
 
 # 目录结构
 
