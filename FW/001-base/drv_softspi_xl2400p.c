@@ -1,6 +1,106 @@
 #include "main.h"
 #include "hbox.h"
 
+
+static void xl2400p_reset(void)
+{
+    //复位
+    uint8_t cfg_top=0;
+    cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER | XL2400P_CFG_TOP);
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,cfg_top & (~0x04) | 0x02);
+    HAL_Delay(1);
+    cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER | XL2400P_CFG_TOP);
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
+    HAL_Delay(1);
+}
+
+/*
+ * XL2400P的寄存器是否变化
+ */
+static bool xl2400p_register_table_dirty=true;
+static uint8_t xl2400p_register_cfg_top_8=0;
+static uint8_t xl2400p_register_rx_addr_p1_40[5]= {0};
+/*
+ * 对于某些配置寄存器(如地址寄存器等,若发生了意外的改变需要通知应用处理)
+ * 用户需要自行添加待检查的寄存器
+ */
+static struct
+{
+    uint8_t *reg_buffer;
+    uint8_t  reg_address;
+    uint8_t  reg_size;
+}
+xl2400p_register_table[]=
+{
+    {&xl2400p_register_cfg_top_8,XL2400P_CFG_TOP,sizeof(xl2400p_register_cfg_top_8)},
+    {xl2400p_register_rx_addr_p1_40,XL2400P_RX_ADDR_P1,sizeof(xl2400p_register_rx_addr_p1_40)},
+};
+static void hsoftspi_xl2400p_register_check(void)
+{
+    if(xl2400p_register_table_dirty)
+    {
+        xl2400p_register_table_dirty=false;
+        for(size_t i=0; i< sizeof(xl2400p_register_table)/sizeof(xl2400p_register_table[0]); i++)
+        {
+            hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | xl2400p_register_table[i].reg_address,xl2400p_register_table[i].reg_buffer,	xl2400p_register_table[i].reg_size);
+        }
+    }
+    else
+    {
+        bool check_ok=true;
+        for(size_t i=0; i< sizeof(xl2400p_register_table)/sizeof(xl2400p_register_table[0]); i++)
+        {
+            uint8_t buffer[16]= {0};
+            if(sizeof(buffer) < xl2400p_register_table[i].reg_size)
+            {
+                continue;
+            }
+            hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | xl2400p_register_table[i].reg_address,buffer,	xl2400p_register_table[i].reg_size);
+            if(memcmp(buffer,xl2400p_register_table[i].reg_buffer,xl2400p_register_table[i].reg_size)!=0)
+            {
+                check_ok=false;
+                /*
+                * 对于某些寄存器而言可能需要独立处理
+                */
+                switch(xl2400p_register_table[i].reg_address)
+                {
+                case XL2400P_CFG_TOP:
+                {
+                    if(((buffer[0] ^ xl2400p_register_table[i].reg_buffer[0]) & 0x3F )!=0)
+                    {
+                        check_ok=true;
+                    }
+                }
+                break;
+                default:
+                {
+                }
+                break;
+                }
+                if(!check_ok)
+                {
+                    break;
+                }
+            }
+
+        }
+
+        if(!check_ok)
+        {
+            xl2400p_reset();
+
+            for(size_t i=0; i< sizeof(xl2400p_register_table)/sizeof(xl2400p_register_table[0]); i++)
+            {
+                hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | xl2400p_register_table[i].reg_address,xl2400p_register_table[i].reg_buffer,	xl2400p_register_table[i].reg_size);
+            }
+
+            //标记为假防止再次读取
+            xl2400p_register_table_dirty=false;
+        }
+    }
+}
+
+
 #define CSN_Low()                       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
 #define CSN_High()                      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
 
@@ -44,17 +144,8 @@ static void hsoftspi_xl2400p_lowlevel_init()
     CSN_High();
     SCK_Low();
 
-    {
-        //复位
-        uint8_t cfg_top=0;
-        cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER | XL2400P_CFG_TOP);
-        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,cfg_top & (~0x04));
-        HAL_Delay(1);
-        cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER | XL2400P_CFG_TOP);
-        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,cfg_top | (0x04));
-        HAL_Delay(1);
-    }
 
+    xl2400p_reset();
 
     {
         /*
@@ -79,7 +170,8 @@ HRUNTIME_INIT_EXPORT(softspi_xl2400p,0,hsoftspi_xl2400p_init,NULL);
 #ifdef HRUNTIME_USING_LOOP_SECTION
 void  hsoftspi_xl2400p_loop(const hruntime_function_t *func)
 {
-
+    //检查寄存器，当寄存器意外改变时复位并恢复相应寄存器
+    hsoftspi_xl2400p_register_check();
 }
 HRUNTIME_LOOP_EXPORT(softspi_xl2400p,0,hsoftspi_xl2400p_loop,NULL);
 #endif
@@ -138,6 +230,11 @@ void hsoftspi_xl2400p_write_register(uint8_t RF_Reg,uint8_t W_Data)
     hsoftspi_xl2400p_write_byte(RF_Reg);//写入地址
     hsoftspi_xl2400p_write_byte(W_Data);//写入数据
     CSN_High();//写入完成拉高片选
+    if(RF_Reg >= XL2400P_W_REGISTER && RF_Reg < XL2400P_W_REGISTER*2)
+    {
+        //标记寄存器已修改
+        xl2400p_register_table_dirty=true;
+    }
 }
 
 
@@ -164,6 +261,11 @@ void hsoftspi_xl2400p_write_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint
         hsoftspi_xl2400p_write_byte(rTemp);
     }
     CSN_High();
+    if(RF_Reg >= XL2400P_W_REGISTER && RF_Reg < XL2400P_W_REGISTER*2)
+    {
+        //标记寄存器已修改
+        xl2400p_register_table_dirty=true;
+    }
 }
 
 
