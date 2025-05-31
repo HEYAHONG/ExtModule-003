@@ -9,6 +9,7 @@ static void xl2400p_reset(void)
     HAL_Delay(1);
     hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
     HAL_Delay(1);
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
 }
 
 /*
