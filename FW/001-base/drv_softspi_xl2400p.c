@@ -5,11 +5,8 @@
 static void xl2400p_reset(void)
 {
     //¸´Î»
-    uint8_t cfg_top=0;
-    cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER | XL2400P_CFG_TOP);
-    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,cfg_top & (~0x04) | 0x02);
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFA);
     HAL_Delay(1);
-    cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER | XL2400P_CFG_TOP);
     hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
     HAL_Delay(1);
 }
@@ -88,7 +85,7 @@ static void hsoftspi_xl2400p_register_check(void)
                 {
                 case XL2400P_CFG_TOP:
                 {
-                    if(((buffer[0] ^ xl2400p_register_table[i].reg_buffer[0]) & 0x3F )!=0)
+                    if((((buffer[0] ^ xl2400p_register_table[i].reg_buffer[0]) & 0x7F )==0) && (((buffer[1] ^ xl2400p_register_table[i].reg_buffer[1]) & 0xC0 )==0))
                     {
                         check_ok=true;
                     }
