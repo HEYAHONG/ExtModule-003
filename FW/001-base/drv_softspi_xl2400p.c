@@ -28,13 +28,14 @@ static uint8_t xl2400p_register_setup_rf[3]= {0};
 static uint8_t xl2400p_register_rx_addr_p0[5]= {0};
 static uint8_t xl2400p_register_rx_addr_p1[5]= {0};
 static uint8_t xl2400p_register_rx_addr_p2top5[4]= {0};
+static uint8_t xl2400p_register_tx_addr[5]= {0};
 static uint8_t xl2400p_register_dynpd[1]= {0};
 static uint8_t xl2400p_register_feature[1]= {0};
 /*
  * 对于某些配置寄存器(如地址寄存器等,若发生了意外的改变需要通知应用处理)
  * 用户需要自行添加待检查的寄存器
  */
-static struct
+static const struct
 {
     uint8_t *reg_buffer;
     uint8_t  reg_address;
@@ -52,6 +53,7 @@ xl2400p_register_table[]=
     {xl2400p_register_rx_addr_p0,XL2400P_RX_ADDR_P0,sizeof(xl2400p_register_rx_addr_p0)},
     {xl2400p_register_rx_addr_p1,XL2400P_RX_ADDR_P1,sizeof(xl2400p_register_rx_addr_p1)},
     {xl2400p_register_rx_addr_p2top5,XL2400P_RX_ADDR_P2TOP5,sizeof(xl2400p_register_rx_addr_p2top5)},
+    {xl2400p_register_tx_addr,XL2400P_TX_ADDR,sizeof(xl2400p_register_tx_addr)},
     {xl2400p_register_dynpd,XL2400P_DYNPD,sizeof(xl2400p_register_dynpd)},
     {xl2400p_register_feature,XL2400P_FEATURE,sizeof(xl2400p_register_feature)},
 };
