@@ -18,8 +18,18 @@ static void xl2400p_reset(void)
  * XL2400P的寄存器是否变化
  */
 static bool xl2400p_register_table_dirty=true;
-static uint8_t xl2400p_register_cfg_top_8=0;
-static uint8_t xl2400p_register_rx_addr_p1_40[5]= {0};
+static uint8_t xl2400p_register_cfg_top[3]= {0};
+static uint8_t xl2400p_register_en_aa[6]= {0};
+static uint8_t xl2400p_register_en_rxaddr[1]= {0};
+static uint8_t xl2400p_register_setup_aw[1]= {0};
+static uint8_t xl2400p_register_setup_retr[4]= {0};
+static uint8_t xl2400p_register_rf_ch[2]= {0};
+static uint8_t xl2400p_register_setup_rf[3]= {0};
+static uint8_t xl2400p_register_rx_addr_p0[5]= {0};
+static uint8_t xl2400p_register_rx_addr_p1[5]= {0};
+static uint8_t xl2400p_register_rx_addr_p2top5[4]= {0};
+static uint8_t xl2400p_register_dynpd[1]= {0};
+static uint8_t xl2400p_register_feature[1]= {0};
 /*
  * 对于某些配置寄存器(如地址寄存器等,若发生了意外的改变需要通知应用处理)
  * 用户需要自行添加待检查的寄存器
@@ -32,8 +42,18 @@ static struct
 }
 xl2400p_register_table[]=
 {
-    {&xl2400p_register_cfg_top_8,XL2400P_CFG_TOP,sizeof(xl2400p_register_cfg_top_8)},
-    {xl2400p_register_rx_addr_p1_40,XL2400P_RX_ADDR_P1,sizeof(xl2400p_register_rx_addr_p1_40)},
+    {xl2400p_register_cfg_top,XL2400P_CFG_TOP,sizeof(xl2400p_register_cfg_top)},
+    {xl2400p_register_en_aa,XL2400P_EN_AA,sizeof(xl2400p_register_en_aa)},
+    {xl2400p_register_en_rxaddr,XL2400P_EN_RXADDR,sizeof(xl2400p_register_en_rxaddr)},
+    {xl2400p_register_setup_aw,XL2400P_SETUP_AW,sizeof(xl2400p_register_setup_aw)},
+    {xl2400p_register_setup_retr,XL2400P_SETUP_RETR,sizeof(xl2400p_register_setup_retr)},
+    {xl2400p_register_rf_ch,XL2400P_RF_CH,sizeof(xl2400p_register_rf_ch)},
+    {xl2400p_register_setup_rf,XL2400P_RF_SETUP,sizeof(xl2400p_register_setup_rf)},
+    {xl2400p_register_rx_addr_p0,XL2400P_RX_ADDR_P0,sizeof(xl2400p_register_rx_addr_p0)},
+    {xl2400p_register_rx_addr_p1,XL2400P_RX_ADDR_P1,sizeof(xl2400p_register_rx_addr_p1)},
+    {xl2400p_register_rx_addr_p2top5,XL2400P_RX_ADDR_P2TOP5,sizeof(xl2400p_register_rx_addr_p2top5)},
+    {xl2400p_register_dynpd,XL2400P_DYNPD,sizeof(xl2400p_register_dynpd)},
+    {xl2400p_register_feature,XL2400P_FEATURE,sizeof(xl2400p_register_feature)},
 };
 static void hsoftspi_xl2400p_register_check(void)
 {
