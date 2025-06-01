@@ -427,6 +427,16 @@
               <FileType>1</FileType>
               <FilePath>..\drv_softspi_xl2400p.c</FilePath>
             </File>
+            <File>
+              <FileName>product_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\product_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_product.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv_product.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

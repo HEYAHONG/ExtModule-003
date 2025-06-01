@@ -4,6 +4,11 @@
 #include "stdbool.h"
 #include "stdlib.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif // __cplusplus
+
 void hsoftspi_xl2400p_write_register(uint8_t RF_Reg,uint8_t W_Data);
 uint8_t hsoftspi_xl2400p_read_register(uint8_t RF_Reg);
 void hsoftspi_xl2400p_write_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint8_t Len);
@@ -63,5 +68,8 @@ void hsoftspi_xl2400p_read_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint8
 #define XL2400P_W_TX_PLOAD_NOACK                0xB0
 #define XL2400P_CMD_NOP                         0xFF //¿Õ²Ù×÷
 
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif
