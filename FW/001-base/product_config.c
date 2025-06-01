@@ -44,6 +44,9 @@ const uint8_t *	product_config_product_id_get(size_t *product_id_len)
         memcpy(product_id,ctx.hash_result,sizeof(product_id));
     }
 
+    //格式化为UUID
+    huuid_custom_uuid_format((uint8_t *)product_id);
+
     return product_id;
 }
 
