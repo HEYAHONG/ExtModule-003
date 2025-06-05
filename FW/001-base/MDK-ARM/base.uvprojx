@@ -782,6 +782,61 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_softfp.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_zlib_adler32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_adler32.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_compress.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_compress.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_crc32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_crc32.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_deflate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_deflate.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_infback.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_infback.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_inffast.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_inffast.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_inflate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_inflate.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_inftrees.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_inftrees.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_trees.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_trees.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_uncompr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_uncompr.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_zutil.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_zutil.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

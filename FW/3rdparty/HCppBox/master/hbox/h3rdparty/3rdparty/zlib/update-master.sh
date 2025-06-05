@@ -21,10 +21,9 @@ CheckTool git
 [ $? -eq 0 ] || exit;
 CheckTool mkdir
 [ $? -eq 0 ] || exit;
-CheckTool sed
+CheckTool rsync
 [ $? -eq 0 ] || exit;
-CheckTool bc
-[ $? -eq 0 ] || exit;
+
 
 #获取当前目录
 slef_path=
@@ -50,24 +49,25 @@ else
         script_dir="$(dirname "${script_name}")"
 fi
 
+echo 当前目录为${script_dir}.
 
-pushd "${script_dir}"
+if [ -d "${script_dir}/zlib" ]
+then
+	pushd "${script_dir}/zlib"
+	git pull			
+	popd
+else
+	git clone -b master https://github.com/madler/zlib "${script_dir}/zlib"
+fi
 
-echo "#include \"huint128.h\"" > huint.h
-echo "#include \"huint128.c\"" > huint.c
 
-i=128
-while [ $i -le 8192 ]
-do
-    i=`echo 32+$i | bc`
-    cp huint128.h huint$i.h
-    sed -i "s/128/$i/g" huint$i.h
-    cp huint128.c huint$i.c
-    sed -i "s/128/$i/g" huint$i.c
-    echo "#include \"huint$i.h\"" >> huint.h
-    echo "#ifdef HUINT$i"         >> huint.c
-    echo "#include \"huint$i.c\"" >> huint.c
-    echo "#endif"                 >> huint.c
-done
-
-popd
+if [ -f "${script_dir}/zlib/LICENSE" ]
+then
+	rsync -rl --progress  "${script_dir}/zlib/LICENSE" "${script_dir}/"
+	rsync -rl --progress  --include="*.h" --include="*.c" --exclude="*" "${script_dir}/zlib/" "${script_dir}/"
+	for c_file in `ls *.c`
+	do
+		cp "zlib_template_c" "../../h3rdparty_zlib_${c_file}"
+		sed -i "s/zlib_filename/${c_file}/g"  "../..//h3rdparty_zlib_${c_file}"
+	done
+fi
