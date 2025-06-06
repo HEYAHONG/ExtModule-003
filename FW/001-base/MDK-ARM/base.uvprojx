@@ -837,6 +837,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_zutil.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_lz4_lz4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_lz4_lz4.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_lz4_lz4hc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_lz4_lz4hc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
