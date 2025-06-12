@@ -847,6 +847,31 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_lz4_lz4hc.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_common.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_gzclose.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_gzclose.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_gzlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_gzlib.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_gzread.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_gzread.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_gzwrite.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_gzwrite.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
