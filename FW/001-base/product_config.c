@@ -165,7 +165,7 @@ bool product_config_data_chacha20_crypto(uint8_t *data,size_t data_len,uint32_t 
         {
             memcpy(nonce_temp,nonce,nonce_len);
         }
-        hchacha20_starts(&ctx,nonce,counter);
+        hchacha20_starts(&ctx,nonce_temp,counter);
     }
     hchacha20_update(&ctx,data_len,data,data);
     ret=true;
