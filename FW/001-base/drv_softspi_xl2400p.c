@@ -1,5 +1,6 @@
 #include "main.h"
 #include "hbox.h"
+#include "product_config.h"
 
 
 static void xl2400p_reset(void)
@@ -169,13 +170,21 @@ static void hsoftspi_xl2400p_lowlevel_init()
 
     {
         /*
-         * 配置地址
-         * 将通道1~5地址的高32位使用CRC32通过芯片UID算出,用作唯一默认地址，通道0仍然使用默认地址
+         * 配置地址P0
+         * 公共地址
          */
-        uint32_t uid_crc=hcrc_crc32_fast_calculate((const uint8_t *)UID_BASE,16);
         uint8_t address[5]= {0};
-        hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | XL2400P_RX_ADDR_P1,address,sizeof(address));
-        memcpy(&address[sizeof(address)-sizeof(uid_crc)],&uid_crc,sizeof(uid_crc));
+        product_config_public_channel_addr(address,sizeof(address));
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P0,address,sizeof(address));
+    }
+
+    {
+        /*
+         * 配置地址P1~P5
+         * 私有地址
+         */
+        uint8_t address[5]= {0};
+        product_config_private_channel_addr(address,sizeof(address),(const uint8_t *)UID_BASE,16);
         hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P1,address,sizeof(address));
     }
 }

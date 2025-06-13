@@ -12,14 +12,17 @@
  */
 #define PRODUCT_PSK_STRING hdefaults_xstr(PRODUCT_PSK)
 
-#ifndef PRODUCT_SOC_NAME
-#define PRODUCT_SOC_NAME XL2409
+/*
+ * SOC/SOLUTION名称
+ */
+#ifndef PRODUCT_SOC_NAME_OR_SOLUTION_NAME
+#define PRODUCT_SOC_NAME_OR_SOLUTION_NAME XL2409
 #endif
 
 /*
  * 产品SOC名称
  */
-#define PRODUCT_SOC_NAME_STRING hdefaults_xstr(PRODUCT_SOC_NAME)
+#define PRODUCT_SOC_NAME_OR_SOLUTION_NAME_STRING hdefaults_xstr(PRODUCT_SOC_NAME_OR_SOLUTION_NAME)
 
 static hmd5_md5_t product_id= {0};
 const uint8_t *	product_config_product_id_get(size_t *product_id_len)
@@ -38,8 +41,8 @@ const uint8_t *	product_config_product_id_get(size_t *product_id_len)
 
     {
         hhmac_md5_context_t ctx= {0};
-        hhmac_md5_starts(&ctx,(const uint8_t *)PRODUCT_SOC_NAME_STRING,strlen(PRODUCT_SOC_NAME_STRING));
-        hhmac_md5_update(&ctx,(const uint8_t *)PRODUCT_NAME_STRING,strlen(PRODUCT_SOC_NAME_STRING));
+        hhmac_md5_starts(&ctx,(const uint8_t *)PRODUCT_SOC_NAME_OR_SOLUTION_NAME_STRING,strlen(PRODUCT_SOC_NAME_OR_SOLUTION_NAME_STRING));
+        hhmac_md5_update(&ctx,(const uint8_t *)PRODUCT_NAME_STRING,strlen(PRODUCT_NAME_STRING));
         hhmac_md5_finish(&ctx);
         memcpy(product_id,ctx.hash_result,sizeof(product_id));
     }
@@ -77,3 +80,94 @@ const uint8_t *	product_config_product_key_get(size_t *product_key_len)
     return product_key;
 }
 
+bool product_config_public_channel_addr(uint8_t *addr,size_t addr_len)
+{
+    bool ret=false;
+    if(addr==NULL || addr_len==0)
+    {
+        return ret;
+    }
+    ret=true;
+    memset(addr,0xFF,addr_len);
+    uint32_t crc=0;
+    {
+        size_t id_len=0;
+        crc=hcrc_crc32_fast_calculate(product_config_product_id_get(&id_len),id_len);
+    }
+    if(addr_len > 1)
+    {
+        addr[addr_len-1]=((crc>>24)&0xFF);
+    }
+    if(addr_len > 2)
+    {
+        addr[addr_len-2]=((crc>>16)&0xFF);
+    }
+    if(addr_len > 3)
+    {
+        addr[addr_len-3]=((crc>>8)&0xFF);
+    }
+    if(addr_len > 4)
+    {
+        addr[addr_len-4]=((crc>>0)&0xFF);
+    }
+    return ret;
+}
+
+bool product_config_private_channel_addr(uint8_t *addr,size_t addr_len,const uint8_t *uid,size_t uid_len)
+{
+    bool ret=false;
+    if(addr==NULL || addr_len==0 || uid==NULL || uid_len==0)
+    {
+        return ret;
+    }
+    ret=true;
+    memset(addr,0x0,addr_len);
+    uint32_t crc=0;
+    {
+        crc=hcrc_crc32_fast_calculate(uid,uid_len);
+    }
+    if(addr_len > 1)
+    {
+        addr[addr_len-1]=((crc>>24)&0xFF);
+    }
+    if(addr_len > 2)
+    {
+        addr[addr_len-2]=((crc>>16)&0xFF);
+    }
+    if(addr_len > 3)
+    {
+        addr[addr_len-3]=((crc>>8)&0xFF);
+    }
+    if(addr_len > 4)
+    {
+        addr[addr_len-4]=((crc>>0)&0xFF);
+    }
+    return ret;
+}
+
+bool product_config_data_chacha20_crypto(uint8_t *data,size_t data_len,uint32_t counter,const uint8_t *nonce,size_t nonce_len)
+{
+    bool ret=false;
+    if(data==NULL || data_len==0 )
+    {
+        return ret;
+    }
+    hchacha20_context_t ctx= {0};
+    hchacha20_setkey(&ctx,product_config_product_key_get(NULL));
+    {
+        uint8_t nonce_temp[12]= {0};
+        product_config_public_channel_addr(nonce_temp,sizeof(nonce_temp));
+        if(nonce_len > sizeof(nonce_temp))
+        {
+            nonce_len=sizeof(nonce_temp);
+        }
+        if(nonce!=NULL && nonce_len != 0)
+        {
+            memcpy(nonce_temp,nonce,nonce_len);
+        }
+        hchacha20_starts(&ctx,nonce,counter);
+    }
+    hchacha20_update(&ctx,data_len,data,data);
+    ret=true;
+    return ret;
+}
