@@ -11,6 +11,72 @@ static void xl2400p_reset(void)
     hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
     HAL_Delay(1);
     hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
+
+    {
+        /*
+         * 配置地址P0
+         * 公共地址
+         */
+        uint8_t address[5]= {0};
+        product_config_public_channel_addr(address,sizeof(address));
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P0,address,sizeof(address));
+    }
+
+    {
+        /*
+         * 配置地址P1~P5
+         * 私有地址
+         */
+        uint8_t address[5]= {0};
+        product_config_private_channel_addr(address,sizeof(address),(const uint8_t *)UID_BASE,16);
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P1,address,sizeof(address));
+    }
+
+    {
+        /*
+         * 配置FEATURE
+         */
+        uint8_t feature=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_FEATURE);
+        //动态FEC+白化+动态有效长度+动态ACK
+        feature |= 0x1D;
+        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_FEATURE,feature);
+    }
+
+    {
+        /*
+         * 配置ENAA
+         */
+        uint8_t enaa=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_EN_AA);
+        enaa |= 0x1F;
+        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_EN_AA,enaa);
+    }
+    {
+        /*
+         * 配置DYNPD
+         */
+        uint8_t dynpd=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_DYNPD);
+        dynpd |= 0x1F;
+        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_DYNPD,dynpd);
+    }
+    {
+        /*
+        * 配置PIPE
+        */
+        uint8_t rxaddr=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_EN_RXADDR);
+        rxaddr |= 0x1F;
+        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_EN_RXADDR,rxaddr);
+    }
+    {
+        /*
+        * 配置重试次数
+        */
+        uint8_t retr=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_SETUP_RETR);
+        retr |= 0x3F;
+        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_SETUP_RETR,retr);
+    }
+
+
+
 }
 
 /*
@@ -213,36 +279,6 @@ static void hsoftspi_xl2400p_lowlevel_init()
 
 
     xl2400p_reset();
-
-    {
-        /*
-         * 配置地址P0
-         * 公共地址
-         */
-        uint8_t address[5]= {0};
-        product_config_public_channel_addr(address,sizeof(address));
-        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P0,address,sizeof(address));
-    }
-
-    {
-        /*
-         * 配置地址P1~P5
-         * 私有地址
-         */
-        uint8_t address[5]= {0};
-        product_config_private_channel_addr(address,sizeof(address),(const uint8_t *)UID_BASE,16);
-        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P1,address,sizeof(address));
-    }
-
-    {
-        /*
-        * 配置FEATURE
-        */
-        uint8_t feature=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_FEATURE);
-        //动态FEC+白化+动态有效长度+动态ACK
-        feature |= 0x1D;
-        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_FEATURE,feature);
-    }
 }
 
 
@@ -369,6 +405,11 @@ void hsoftspi_xl2400p_read_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint8
         pBuff[i] = hsoftspi_xl2400p_read_byte();
     }
     CSN_High();
+}
+
+void xl2400p_reset_chip(void)
+{
+    xl2400p_reset();
 }
 
 void xl2400p_set_channel(uint16_t channel)

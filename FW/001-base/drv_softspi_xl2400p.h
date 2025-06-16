@@ -80,6 +80,11 @@ void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler);
 #define XL2400P_CMD_NOP                         0xFF //空操作
 
 /*
+ * 复位
+ */
+void xl2400p_reset_chip(void);
+
+/*
  * 设置通道频率
  */
 void xl2400p_set_channel(uint16_t channel);
