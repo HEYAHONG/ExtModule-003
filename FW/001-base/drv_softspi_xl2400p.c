@@ -544,7 +544,7 @@ void xl2400p_write_rx_fifo(void *data,size_t data_len)
     }
 }
 
-uint8_t xl2400p_write_rx_fifo_length(void)
+uint8_t xl2400p_read_rx_fifo_length(void)
 {
     return hsoftspi_xl2400p_read_register(XL2400P_R_RX_PL_WID);
 }

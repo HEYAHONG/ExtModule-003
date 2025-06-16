@@ -190,7 +190,7 @@ void xl2400p_write_rx_fifo(void *data,size_t data_len);
 /*
  * 读取RX FIFO中的数据长度
  */
-uint8_t xl2400p_write_rx_fifo_length(void);
+uint8_t xl2400p_read_rx_fifo_length(void);
 
 #ifdef __cplusplus
 }
