@@ -189,6 +189,8 @@ static void hsoftspi_xl2400p_lowlevel_init()
     }
 }
 
+
+
 #ifdef HRUNTIME_USING_INIT_SECTION
 void  hsoftspi_xl2400p_init(const hruntime_function_t *func)
 {
@@ -373,6 +375,11 @@ uint8_t xl2400p_get_rf_status(void)
     return hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER+XL2400P_RF_STATUS);
 }
 
+void xl2400p_set_rf_status(uint8_t rf_status)
+{
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER+XL2400P_RF_STATUS,rf_status);
+}
+
 void xl2400p_flush_tx(void)
 {
     hsoftspi_xl2400p_write_register(XL2400P_FLUSH_TX,XL2400P_CMD_NOP);
@@ -490,6 +497,18 @@ uint8_t xl2400p_get_rx_payload_length(uint8_t px)
     return rx_pw[px];
 }
 
+void xl2400p_set_rx_payload_length(uint8_t px,uint8_t pipe_width)
+{
+    uint8_t rx_pw[6]= {0};
+    if(px >= 5)
+    {
+        px=5;
+    }
+    hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER| XL2400P_RX_PW_PX,rx_pw,sizeof(rx_pw));
+    rx_pw[px]=pipe_width;
+    hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER| XL2400P_RX_PW_PX,rx_pw,sizeof(rx_pw));
+}
+
 int8_t xl2400p_get_rx_pipe_num(void)
 {
     int8_t ret=-1;
@@ -523,4 +542,9 @@ void xl2400p_write_rx_fifo(void *data,size_t data_len)
     {
         hsoftspi_xl2400p_read_register_buffer(XL2400P_R_RX_PLOAD,(uint8_t *)data,data_len);
     }
+}
+
+uint8_t xl2400p_write_rx_fifo_length(void)
+{
+    return hsoftspi_xl2400p_read_register(XL2400P_R_RX_PL_WID);
 }

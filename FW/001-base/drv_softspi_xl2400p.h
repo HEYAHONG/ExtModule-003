@@ -100,6 +100,11 @@ void xl2400p_set_is_prx(bool prx_mode);
 uint8_t xl2400p_get_rf_status(void);
 
 /*
+ * 写入RF状态(某些状态位可通过写1清0)
+ */
+void xl2400p_set_rf_status(uint8_t rf_status);
+
+/*
  * 清空发送
  */
 void xl2400p_flush_tx(void);
@@ -152,9 +157,14 @@ void xl2400p_get_rx_addr2top5(void *addr,size_t addr_len);
 
 
 /*
- * 读取接收的负载数据长度
+ * 读取PIPE负载数据长度设置
  */
 uint8_t xl2400p_get_rx_payload_length(uint8_t px);
+
+/*
+ * 写入PIPE负载数据长度设置
+ */
+void xl2400p_set_rx_payload_length(uint8_t px,uint8_t pipe_width);
 
 /*
  * 获取待接收的通道(-1表示出错)
@@ -176,6 +186,11 @@ void xl2400p_write_tx_fifo_noack(const void *data,size_t data_len);
  * 读取RX FIFO
  */
 void xl2400p_write_rx_fifo(void *data,size_t data_len);
+
+/*
+ * 读取RX FIFO中的数据长度
+ */
+uint8_t xl2400p_write_rx_fifo_length(void);
 
 #ifdef __cplusplus
 }
