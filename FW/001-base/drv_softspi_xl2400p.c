@@ -121,6 +121,52 @@ static void hsoftspi_xl2400p_register_check(void)
     }
 }
 
+static xl2400p_loop_event_handler_t xl2400p_loop_event_handler=NULL;
+void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler)
+{
+    xl2400p_loop_event_handler=evt_handler;
+}
+static void xl2400p_loop(void)
+{
+    if(xl2400p_get_soft_ce())
+    {
+        //启用CE后工作
+        uint8_t status=xl2400p_get_rf_status();
+        if(xl2400p_get_is_prx())
+        {
+            //接收模式
+            if((status&(1<< XL2400P_LOOP_EVENT_RX_DS))!=0)
+            {
+                //有数据进入FIFO
+                if(xl2400p_loop_event_handler!=NULL)
+                {
+                    xl2400p_loop_event_handler(XL2400P_LOOP_EVENT_RX_DS);
+                }
+            }
+        }
+        else
+        {
+            //发送模式
+            if(((status&(1<< XL2400P_LOOP_EVENT_TX_DS))!=0))
+            {
+                //发送完成
+                if(xl2400p_loop_event_handler!=NULL)
+                {
+                    xl2400p_loop_event_handler(XL2400P_LOOP_EVENT_TX_DS);
+                }
+            }
+
+            if(((status&(1<< XL2400P_LOOP_EVENT_MAX_RT))!=0))
+            {
+                //超过最大重试次数
+                if(xl2400p_loop_event_handler!=NULL)
+                {
+                    xl2400p_loop_event_handler(XL2400P_LOOP_EVENT_MAX_RT);
+                }
+            }
+        }
+    }
+}
 
 #define CSN_Low()                       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
 #define CSN_High()                      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
@@ -187,6 +233,16 @@ static void hsoftspi_xl2400p_lowlevel_init()
         product_config_private_channel_addr(address,sizeof(address),(const uint8_t *)UID_BASE,16);
         hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P1,address,sizeof(address));
     }
+
+    {
+        /*
+        * 配置FEATURE
+        */
+        uint8_t feature=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_FEATURE);
+        //动态FEC+白化+动态有效长度+动态ACK
+        feature |= 0x1D;
+        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_FEATURE,feature);
+    }
 }
 
 
@@ -203,6 +259,9 @@ void  hsoftspi_xl2400p_loop(const hruntime_function_t *func)
 {
     //检查寄存器，当寄存器意外改变时复位并恢复相应寄存器
     hsoftspi_xl2400p_register_check();
+
+    //XL2400P循环
+    xl2400p_loop();
 }
 HRUNTIME_LOOP_EXPORT(softspi_xl2400p,0,hsoftspi_xl2400p_loop,NULL);
 #endif

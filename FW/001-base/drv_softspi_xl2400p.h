@@ -9,11 +9,22 @@ extern "C"
 {
 #endif // __cplusplus
 
+
 void hsoftspi_xl2400p_write_register(uint8_t RF_Reg,uint8_t W_Data);
 uint8_t hsoftspi_xl2400p_read_register(uint8_t RF_Reg);
 void hsoftspi_xl2400p_write_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint8_t Len);
 void hsoftspi_xl2400p_read_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint8_t Len);
 
+
+typedef enum
+{
+    XL2400P_LOOP_EVENT_RX_DS=6,
+    XL2400P_LOOP_EVENT_TX_DS=5,
+    XL2400P_LOOP_EVENT_MAX_RT=4,
+} xl2400p_loop_event_t;
+
+typedef void (*xl2400p_loop_event_handler_t)(xl2400p_loop_event_t evt);
+void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler);
 
 /*********************************************************************/
 /************************* ¼Ä´æÆ÷µØÖ·¶¨Òå *****************************/
