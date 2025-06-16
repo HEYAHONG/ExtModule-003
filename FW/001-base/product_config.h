@@ -28,13 +28,13 @@ extern "C"
  * 获取产品ID(通过产品名称计算得来),通常128位。
  * 可用于区分不同的网络。
  */
-const uint8_t *	product_config_product_id_get(size_t *product_id_len);
+const uint8_t * product_config_product_id_get(size_t *product_id_len);
 
 /*
  * 获取产品密钥(通过产品ID与),通常256位。
  * 可用于通信过程中使用AES或者ChaCha20加密的密钥。
  */
-const uint8_t *	product_config_product_key_get(size_t *product_key_len);
+const uint8_t * product_config_product_key_get(size_t *product_key_len);
 
 /*
  * 获取产品公共地址(广播地址).公共地址后4字节为产品ID的CRC32,其余字节填充0xFF

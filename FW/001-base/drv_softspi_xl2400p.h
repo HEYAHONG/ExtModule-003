@@ -68,6 +68,115 @@ void hsoftspi_xl2400p_read_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint8
 #define XL2400P_W_TX_PLOAD_NOACK                0xB0
 #define XL2400P_CMD_NOP                         0xFF //空操作
 
+/*
+ * 设置通道频率
+ */
+void xl2400p_set_channel(uint16_t channel);
+
+/*
+ * 获取CE
+ */
+bool xl2400p_get_soft_ce(void);
+
+/*
+ * 设置CE
+ */
+void xl2400p_set_soft_ce(bool ce_enable);
+
+/*
+ * 获取是否是PRX模式
+ */
+bool xl2400p_get_is_prx(void);
+
+/*
+ * 设置是否是PRX模式
+ */
+void xl2400p_set_is_prx(bool prx_mode);
+
+
+/*
+ * 读取RF状态
+ */
+uint8_t xl2400p_get_rf_status(void);
+
+/*
+ * 清空发送
+ */
+void xl2400p_flush_tx(void);
+
+/*
+ * 清空接收
+ */
+void xl2400p_flush_rx(void);
+
+/*
+ * 设置发送地址
+ */
+void xl2400p_set_tx_addr(const void *addr,size_t addr_len);
+
+/*
+* 读取发送地址
+ */
+void xl2400p_get_tx_addr(void *addr,size_t addr_len);
+
+/*
+ * 设置接收地址(通道0)
+ */
+void xl2400p_set_rx_addr0(const void *addr,size_t addr_len);
+
+/*
+ * 读取接收地址(通道0)
+ */
+void xl2400p_get_rx_addr0(void *addr,size_t addr_len);
+
+/*
+ * 设置接收地址(通道1)
+ */
+void xl2400p_set_rx_addr1(const void *addr,size_t addr_len);
+
+/*
+ * 读取接收地址(通道1)
+ */
+void xl2400p_get_rx_addr1(void *addr,size_t addr_len);
+
+
+/*
+ * 设置接收地址(通道2到5)
+ */
+void xl2400p_set_rx_addr2top5(const void *addr,size_t addr_len);
+
+/*
+ * 读取接收地址(通道2到5)
+ */
+void xl2400p_get_rx_addr2top5(void *addr,size_t addr_len);
+
+
+/*
+ * 读取接收的负载数据长度
+ */
+uint8_t xl2400p_get_rx_payload_length(uint8_t px);
+
+/*
+ * 获取待接收的通道(-1表示出错)
+ */
+int8_t xl2400p_get_rx_pipe_num(void);
+
+/*
+ * 写TX FIFO
+ */
+void xl2400p_write_tx_fifo(const void *data,size_t data_len);
+
+
+/*
+ * 写TX FIFO(无ACK),注意:需要使能相应功能后生效
+ */
+void xl2400p_write_tx_fifo_noack(const void *data,size_t data_len);
+
+/*
+ * 读取RX FIFO
+ */
+void xl2400p_write_rx_fifo(void *data,size_t data_len);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

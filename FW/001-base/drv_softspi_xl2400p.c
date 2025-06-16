@@ -63,7 +63,7 @@ static void hsoftspi_xl2400p_register_check(void)
         xl2400p_register_table_dirty=false;
         for(size_t i=0; i< sizeof(xl2400p_register_table)/sizeof(xl2400p_register_table[0]); i++)
         {
-            hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | xl2400p_register_table[i].reg_address,xl2400p_register_table[i].reg_buffer,	xl2400p_register_table[i].reg_size);
+            hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | xl2400p_register_table[i].reg_address,xl2400p_register_table[i].reg_buffer,  xl2400p_register_table[i].reg_size);
         }
     }
     else
@@ -76,7 +76,7 @@ static void hsoftspi_xl2400p_register_check(void)
             {
                 continue;
             }
-            hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | xl2400p_register_table[i].reg_address,buffer,	xl2400p_register_table[i].reg_size);
+            hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | xl2400p_register_table[i].reg_address,buffer,    xl2400p_register_table[i].reg_size);
             if(memcmp(buffer,xl2400p_register_table[i].reg_buffer,xl2400p_register_table[i].reg_size)!=0)
             {
                 check_ok=false;
@@ -112,7 +112,7 @@ static void hsoftspi_xl2400p_register_check(void)
 
             for(size_t i=0; i< sizeof(xl2400p_register_table)/sizeof(xl2400p_register_table[0]); i++)
             {
-                hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | xl2400p_register_table[i].reg_address,xl2400p_register_table[i].reg_buffer,	xl2400p_register_table[i].reg_size);
+                hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | xl2400p_register_table[i].reg_address,xl2400p_register_table[i].reg_buffer, xl2400p_register_table[i].reg_size);
             }
 
             //标记为假防止再次读取
@@ -310,4 +310,217 @@ void hsoftspi_xl2400p_read_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint8
     CSN_High();
 }
 
+void xl2400p_set_channel(uint16_t channel)
+{
+    if(channel < 2400)
+    {
+        channel = 2400;
+    }
+    if(channel > 2483)
+    {
+        channel = 2483;
+    }
+    uint8_t buffer[2]= {0};
+    buffer[0]=(uint8_t)channel;
+    buffer[1]=(uint8_t)(channel >> 8);
+    hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER+XL2400P_RF_CH,buffer,sizeof(buffer));
+}
 
+bool xl2400p_get_soft_ce(void)
+{
+    uint8_t cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER+XL2400P_CFG_TOP);
+    return (cfg_top&0x01)!=0;
+}
+
+void xl2400p_set_soft_ce(bool ce_enable)
+{
+    uint8_t cfg_top=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER+XL2400P_CFG_TOP);
+    if(ce_enable)
+    {
+        cfg_top|=0x01;
+    }
+    else
+    {
+        cfg_top&=(~0x01);
+    }
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER+XL2400P_CFG_TOP,cfg_top);
+}
+
+bool xl2400p_get_is_prx(void)
+{
+    uint8_t cfg_top[2]= {0};
+    hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER+XL2400P_CFG_TOP,cfg_top,sizeof(cfg_top));
+    return (cfg_top[1]&(1<<6))!=0;
+}
+
+void xl2400p_set_is_prx(bool prx_mode)
+{
+    uint8_t cfg_top[2]= {0};
+    hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER+XL2400P_CFG_TOP,cfg_top,sizeof(cfg_top));
+    if(prx_mode)
+    {
+        cfg_top[1]|= (1<<6);
+    }
+    else
+    {
+        cfg_top[1]&= (~(1<<6));
+    }
+    hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER+XL2400P_CFG_TOP,cfg_top,sizeof(cfg_top));
+}
+
+uint8_t xl2400p_get_rf_status(void)
+{
+    return hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER+XL2400P_RF_STATUS);
+}
+
+void xl2400p_flush_tx(void)
+{
+    hsoftspi_xl2400p_write_register(XL2400P_FLUSH_TX,XL2400P_CMD_NOP);
+}
+
+void xl2400p_flush_rx(void)
+{
+    hsoftspi_xl2400p_write_register(XL2400P_FLUSH_RX,XL2400P_CMD_NOP);
+}
+
+void xl2400p_set_tx_addr(const void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 5)
+        {
+            addr_len=5;
+        }
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER| XL2400P_TX_ADDR,(uint8_t *)addr,addr_len);
+    }
+}
+
+void xl2400p_get_tx_addr(void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 5)
+        {
+            addr_len=5;
+        }
+        hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER| XL2400P_TX_ADDR,(uint8_t *)addr,addr_len);
+    }
+}
+
+void xl2400p_set_rx_addr0(const void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 5)
+        {
+            addr_len=5;
+        }
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER| XL2400P_RX_ADDR_P0,(uint8_t *)addr,addr_len);
+    }
+}
+
+void xl2400p_get_rx_addr0(void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 5)
+        {
+            addr_len=5;
+        }
+        hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER| XL2400P_RX_ADDR_P0,(uint8_t *)addr,addr_len);
+    }
+}
+
+void xl2400p_set_rx_addr1(const void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 5)
+        {
+            addr_len=5;
+        }
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER| XL2400P_RX_ADDR_P1,(uint8_t *)addr,addr_len);
+    }
+}
+
+void xl2400p_get_rx_addr1(void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 5)
+        {
+            addr_len=5;
+        }
+        hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER| XL2400P_RX_ADDR_P1,(uint8_t *)addr,addr_len);
+    }
+}
+
+void xl2400p_set_rx_addr2top5(const void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 4)
+        {
+            addr_len=4;
+        }
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER| XL2400P_RX_ADDR_P2TOP5,(uint8_t *)addr,addr_len);
+    }
+}
+
+void xl2400p_get_rx_addr2top5(void *addr,size_t addr_len)
+{
+    if(addr!=NULL)
+    {
+        if(addr_len > 4)
+        {
+            addr_len=4;
+        }
+        hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER| XL2400P_RX_ADDR_P2TOP5,(uint8_t *)addr,addr_len);
+    }
+}
+
+uint8_t xl2400p_get_rx_payload_length(uint8_t px)
+{
+    uint8_t rx_pw[6]= {0};
+    if(px >= 5)
+    {
+        px=5;
+    }
+    hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER| XL2400P_RX_PW_PX,rx_pw,sizeof(rx_pw));
+    return rx_pw[px];
+}
+
+int8_t xl2400p_get_rx_pipe_num(void)
+{
+    int8_t ret=-1;
+    uint8_t status=xl2400p_get_rf_status();
+    if((status & (1<<6))!=0)
+    {
+        ret=((status >> 1)&0x07);
+    }
+    return ret;
+}
+
+void xl2400p_write_tx_fifo(const void *data,size_t data_len)
+{
+    if(data!=NULL && data_len > 0)
+    {
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_TX_PLOAD,(uint8_t *)data,data_len);
+    }
+}
+
+void xl2400p_write_tx_fifo_noack(const void *data,size_t data_len)
+{
+    if(data!=NULL && data_len > 0)
+    {
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_TX_PLOAD_NOACK,(uint8_t *)data,data_len);
+    }
+}
+
+void xl2400p_write_rx_fifo(void *data,size_t data_len)
+{
+    if(data!=NULL && data_len > 0)
+    {
+        hsoftspi_xl2400p_read_register_buffer(XL2400P_R_RX_PLOAD,(uint8_t *)data,data_len);
+    }
+}

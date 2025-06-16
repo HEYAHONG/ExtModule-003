@@ -25,7 +25,7 @@
 #define PRODUCT_SOC_NAME_OR_SOLUTION_NAME_STRING hdefaults_xstr(PRODUCT_SOC_NAME_OR_SOLUTION_NAME)
 
 static hmd5_md5_t product_id= {0};
-const uint8_t *	product_config_product_id_get(size_t *product_id_len)
+const uint8_t * product_config_product_id_get(size_t *product_id_len)
 {
     if(product_id_len!=NULL)
     {
@@ -55,7 +55,7 @@ const uint8_t *	product_config_product_id_get(size_t *product_id_len)
 
 
 static hsha2_sha256_t product_key= {0};
-const uint8_t *	product_config_product_key_get(size_t *product_key_len)
+const uint8_t * product_config_product_key_get(size_t *product_key_len)
 {
     if(product_key_len!=NULL)
     {
