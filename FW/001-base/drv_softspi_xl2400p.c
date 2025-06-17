@@ -15,12 +15,13 @@ static void xl2400p_reset(void)
 
     {
         /*
-         * 配置地址P0
+         * 配置地址RXADDR_P0/TXADDR
          * 公共地址
          */
         uint8_t address[5]= {0};
         product_config_public_channel_addr(address,sizeof(address));
         hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_RX_ADDR_P0,address,sizeof(address));
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_TX_ADDR,address,sizeof(address));
     }
 
     {
