@@ -661,6 +661,75 @@ void xl2400p_get_rx_addr2top5(void *addr,size_t addr_len)
     }
 }
 
+void xl2400p_get_rx_addr(uint8_t px,void *addr,size_t addr_len)
+{
+    if(addr!=NULL && addr_len!=0)
+    {
+        switch(px)
+        {
+        case 0:
+        {
+            xl2400p_get_rx_addr0(addr,addr_len);
+        }
+        break;
+        case 1:
+        {
+            xl2400p_get_rx_addr1(addr,addr_len);
+        }
+        break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        {
+            xl2400p_get_rx_addr1(addr,addr_len);
+            uint8_t p2top5[4]= {0};
+            xl2400p_get_rx_addr2top5(p2top5,sizeof(p2top5));
+            ((uint8_t *)addr)[0]=p2top5[px-2];
+        }
+        break;
+        default:
+            break;
+        }
+    }
+}
+
+void xl2400p_set_rx_addr(uint8_t px,const void *addr,size_t addr_len)
+{
+    if(addr!=NULL && addr_len!=0)
+    {
+        switch(px)
+        {
+        case 0:
+        {
+            xl2400p_set_rx_addr0(addr,addr_len);
+        }
+        break;
+        case 1:
+        {
+            xl2400p_set_rx_addr1(addr,addr_len);
+        }
+        break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        {
+            /*
+            * 通道2~通道5只能设置最低字节地址
+            */
+            uint8_t p2top5[4]= {0};
+            xl2400p_get_rx_addr2top5(p2top5,sizeof(p2top5));
+            p2top5[px-2]=((uint8_t *)addr)[0];
+            xl2400p_set_rx_addr2top5(p2top5,sizeof(p2top5));
+        }
+        break;
+        default:
+            break;
+        }
+    }
+}
+
 uint8_t xl2400p_get_rx_payload_length(uint8_t px)
 {
     uint8_t rx_pw[6]= {0};

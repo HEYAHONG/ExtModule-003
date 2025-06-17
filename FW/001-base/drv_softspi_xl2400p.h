@@ -176,6 +176,15 @@ void xl2400p_set_rx_addr2top5(const void *addr,size_t addr_len);
  */
 void xl2400p_get_rx_addr2top5(void *addr,size_t addr_len);
 
+/*
+ * 获取接收地址(0~5)
+ */
+void xl2400p_get_rx_addr(uint8_t px,void *addr,size_t addr_len);
+
+/*
+ * 设置接收地址(0~5)
+ */
+void xl2400p_set_rx_addr(uint8_t px,const void *addr,size_t addr_len);
 
 /*
  * 读取PIPE负载数据长度设置
