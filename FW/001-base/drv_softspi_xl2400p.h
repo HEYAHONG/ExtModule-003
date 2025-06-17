@@ -27,7 +27,7 @@ typedef void (*xl2400p_loop_event_handler_t)(xl2400p_loop_event_t evt);
 void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler);
 
 typedef void (*xl2400p_loop_data_handler_t)(uint8_t *data,size_t datalen,uint8_t px);
-void xl2400p_loop_set_data_handler(xl2400p_loop_data_handler_t evt_handler);
+void xl2400p_loop_set_data_handler(xl2400p_loop_data_handler_t data_handler);
 
 /*********************************************************************/
 /************************* ¼Ä´æÆ÷µØÖ·¶¨Òå *****************************/

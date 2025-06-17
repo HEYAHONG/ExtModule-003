@@ -242,6 +242,10 @@ void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler)
     xl2400p_loop_event_handler=evt_handler;
 }
 static xl2400p_loop_data_handler_t xl2400p_loop_data_handler=NULL;
+void xl2400p_loop_set_data_handler(xl2400p_loop_data_handler_t data_handler)
+{
+    xl2400p_loop_data_handler=data_handler;
+}
 static void xl2400p_loop(void)
 {
     if(xl2400p_get_soft_ce())
