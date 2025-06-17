@@ -287,6 +287,13 @@ static void xl2400p_loop(void)
                 {
                     xl2400p_loop_event_handler(XL2400P_LOOP_EVENT_MAX_RT);
                 }
+                else
+                {
+                    /*
+                     * 如果不清空tx_fifo,芯片将一直重试发送,当用户处理此事件时需要注意重复进入的问题。
+                     */
+                    xl2400p_flush_tx();
+                }
             }
         }
 
