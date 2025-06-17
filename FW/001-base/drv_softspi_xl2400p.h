@@ -26,6 +26,9 @@ typedef enum
 typedef void (*xl2400p_loop_event_handler_t)(xl2400p_loop_event_t evt);
 void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler);
 
+typedef void (*xl2400p_loop_data_handler_t)(uint8_t *data,size_t datalen,uint8_t px);
+void xl2400p_loop_set_data_handler(xl2400p_loop_data_handler_t evt_handler);
+
 /*********************************************************************/
 /************************* 寄存器地址定义 *****************************/
 /*********************************************************************/
@@ -78,6 +81,8 @@ void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler);
 #define XL2400P_W_ACK_PLOAD                     0xA8
 #define XL2400P_W_TX_PLOAD_NOACK                0xB0
 #define XL2400P_CMD_NOP                         0xFF //空操作
+
+#define XL2400P_DEFAULT_RF_CHANNEL                          2417
 
 /*
  * 复位

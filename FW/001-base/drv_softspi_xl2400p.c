@@ -105,6 +105,29 @@ static void xl2400p_reset(void)
 
 }
 
+static void xl2400p_defaults_state()
+{
+    {
+        //接收状态
+        xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL-1);
+        xl2400p_set_is_prx(true);
+        xl2400p_set_soft_ce(true);
+    }
+
+//    {
+//        //发送状态
+//        xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL);
+//        xl2400p_set_is_prx(false);
+//        xl2400p_set_soft_ce(true);
+//        {
+//            //发送数据
+//            uint8_t data[17]= {0xFE,0x05,0x07};
+//            xl2400p_write_tx_fifo(data,sizeof(data));
+//        }
+//    }
+
+}
+
 /*
  * XL2400P的寄存器是否变化
  */
@@ -218,6 +241,7 @@ void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler)
 {
     xl2400p_loop_event_handler=evt_handler;
 }
+static xl2400p_loop_data_handler_t xl2400p_loop_data_handler=NULL;
 static void xl2400p_loop(void)
 {
     if(xl2400p_get_soft_ce())
@@ -230,6 +254,14 @@ static void xl2400p_loop(void)
             if((status&(1<< XL2400P_LOOP_EVENT_RX_DS))!=0)
             {
                 //有数据进入FIFO
+                uint8_t px=((status > 1)&0x7); //PIPE编号
+                uint8_t datalen=xl2400p_read_rx_fifo_length();
+                uint8_t data[128]= {0};
+                xl2400p_read_rx_fifo(data,datalen);
+                if(xl2400p_loop_data_handler!=NULL)
+                {
+                    xl2400p_loop_data_handler(data,datalen,px);
+                }
                 if(xl2400p_loop_event_handler!=NULL)
                 {
                     xl2400p_loop_event_handler(XL2400P_LOOP_EVENT_RX_DS);
@@ -257,6 +289,9 @@ static void xl2400p_loop(void)
                 }
             }
         }
+
+        //清除相应的状态位
+        xl2400p_set_rf_status(status);
     }
 }
 
@@ -313,6 +348,8 @@ static void hsoftspi_xl2400p_lowlevel_init()
 void  hsoftspi_xl2400p_init(const hruntime_function_t *func)
 {
     hsoftspi_xl2400p_lowlevel_init();
+
+    xl2400p_defaults_state();
 }
 HRUNTIME_INIT_EXPORT(softspi_xl2400p,0,hsoftspi_xl2400p_init,NULL);
 #endif
