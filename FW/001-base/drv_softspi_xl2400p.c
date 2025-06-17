@@ -254,7 +254,7 @@ static void xl2400p_loop(void)
             if((status&(1<< XL2400P_LOOP_EVENT_RX_DS))!=0)
             {
                 //有数据进入FIFO
-                uint8_t px=((status > 1)&0x7); //PIPE编号
+                uint8_t px=((status >> 1)&0x7); //PIPE编号
                 uint8_t datalen=xl2400p_read_rx_fifo_length();
                 uint8_t data[128]= {0};
                 xl2400p_read_rx_fifo(data,datalen);
