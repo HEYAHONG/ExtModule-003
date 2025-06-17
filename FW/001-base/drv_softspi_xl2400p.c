@@ -636,7 +636,7 @@ void xl2400p_write_tx_fifo_noack(const void *data,size_t data_len)
     }
 }
 
-void xl2400p_write_rx_fifo(void *data,size_t data_len)
+void xl2400p_read_rx_fifo(void *data,size_t data_len)
 {
     if(data!=NULL && data_len > 0)
     {

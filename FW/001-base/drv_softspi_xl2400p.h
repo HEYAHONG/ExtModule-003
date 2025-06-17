@@ -201,7 +201,7 @@ void xl2400p_write_tx_fifo_noack(const void *data,size_t data_len);
 /*
  * 读取RX FIFO
  */
-void xl2400p_write_rx_fifo(void *data,size_t data_len);
+void xl2400p_read_rx_fifo(void *data,size_t data_len);
 
 /*
  * 读取RX FIFO中的数据长度
