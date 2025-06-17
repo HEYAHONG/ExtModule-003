@@ -6,11 +6,12 @@
 static void xl2400p_reset(void)
 {
     //¸´Î»
-    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFA);
-    HAL_Delay(1);
-    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
-    HAL_Delay(1);
-    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0x1A);
+    while(0xFE != hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER | XL2400P_CFG_TOP))
+    {
+        HAL_Delay(5);
+        hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER | XL2400P_CFG_TOP,0xFE);
+    }
 
     {
         /*
@@ -34,6 +35,16 @@ static void xl2400p_reset(void)
 
     {
         /*
+         * ÅäÖÃÄ£Äâ
+         */
+        uint8_t analog_cfg[6]= {0};
+        hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER | XL2400P_ANALOG_CFG3,analog_cfg,sizeof(analog_cfg));
+        analog_cfg[5]=((analog_cfg[5]&0xFF) | 0x6D);
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER | XL2400P_ANALOG_CFG3,analog_cfg,sizeof(analog_cfg));
+    }
+
+    {
+        /*
          * ÅäÖÃFEATURE
          */
         uint8_t feature=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_FEATURE);
@@ -47,7 +58,7 @@ static void xl2400p_reset(void)
          * ÅäÖÃENAA
          */
         uint8_t enaa=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_EN_AA);
-        enaa |= 0x1F;
+        enaa |= 0x3F;
         hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_EN_AA,enaa);
     }
     {
@@ -55,7 +66,7 @@ static void xl2400p_reset(void)
          * ÅäÖÃDYNPD
          */
         uint8_t dynpd=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_DYNPD);
-        dynpd |= 0x1F;
+        dynpd |= 0x3F;
         hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_DYNPD,dynpd);
     }
     {
@@ -63,7 +74,7 @@ static void xl2400p_reset(void)
         * ÅäÖÃPIPE
         */
         uint8_t rxaddr=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_EN_RXADDR);
-        rxaddr |= 0x1F;
+        rxaddr |= 0x3F;
         hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_EN_RXADDR,rxaddr);
     }
     {
@@ -75,7 +86,21 @@ static void xl2400p_reset(void)
         hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_SETUP_RETR,retr);
     }
 
+    {
+        /*
+        * ÅäÖÃRF_SETUP
+        */
+        uint8_t rf_setup[2]= {0x02,0x10};
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER| XL2400P_RF_SETUP,rf_setup,sizeof(rf_setup));
+    }
 
+    {
+        /*
+        * ÖØÐÂÅäÖÃCFG_TOP
+        */
+        uint8_t cfg_top[2]= {0xFE,0x80};
+        hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER| XL2400P_CFG_TOP,cfg_top,sizeof(cfg_top));
+    }
 
 }
 
@@ -422,10 +447,15 @@ void xl2400p_set_channel(uint16_t channel)
     {
         channel = 2483;
     }
+    uint8_t enaa=hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_EN_AA);
+    enaa &= (~(0x40));
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_EN_AA,enaa);
     uint8_t buffer[2]= {0};
     buffer[0]=(uint8_t)channel;
     buffer[1]=(uint8_t)(channel >> 8);
     hsoftspi_xl2400p_write_register_buffer(XL2400P_W_REGISTER+XL2400P_RF_CH,buffer,sizeof(buffer));
+    enaa |= (0x40);
+    hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER| XL2400P_EN_AA,enaa);
 }
 
 bool xl2400p_get_soft_ce(void)
