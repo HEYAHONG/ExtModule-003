@@ -126,6 +126,12 @@ uint8_t xl2400p_get_rf_status(void);
 void xl2400p_set_rf_status(uint8_t rf_status);
 
 /*
+ * ¶ÁÈ¡RF_FIFO×´Ì¬
+ */
+uint32_t xl2400p_get_rf_fifo_status(void);
+
+
+/*
  * Çå¿Õ·¢ËÍ
  */
 void xl2400p_flush_tx(void);

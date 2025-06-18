@@ -559,6 +559,13 @@ void xl2400p_set_rf_status(uint8_t rf_status)
     hsoftspi_xl2400p_write_register(XL2400P_W_REGISTER+XL2400P_RF_STATUS,rf_status);
 }
 
+uint32_t xl2400p_get_rf_fifo_status(void)
+{
+    uint8_t fifo_status[4]= {0};
+    hsoftspi_xl2400p_read_register_buffer(XL2400P_R_REGISTER+XL2400P_STATUS_FIFO,fifo_status,sizeof(fifo_status));
+    return fifo_status[0]*(1UL << 0) + fifo_status[1]*(1UL << 8) + fifo_status[2]*(1UL << 16) + fifo_status[3]*(1UL << 24);
+}
+
 void xl2400p_flush_tx(void)
 {
     hsoftspi_xl2400p_write_register(XL2400P_FLUSH_TX,XL2400P_CMD_NOP);
