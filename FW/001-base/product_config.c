@@ -171,3 +171,25 @@ bool product_config_data_chacha20_crypto(uint8_t *data,size_t data_len,uint32_t 
     ret=true;
     return ret;
 }
+
+#include H3RDPARTY_LZ4_HEADER
+
+size_t product_config_data_compress(void *dst,size_t dst_len,const void *src,size_t src_len)
+{
+    int ret=LZ4_compress_default((const char *)src,(char *)dst,src_len,dst_len);
+    if(ret <= 0)
+    {
+        ret=0;
+    }
+    return ret;
+}
+
+size_t product_config_data_uncompress(void *dst,size_t dst_len,const void *src,size_t src_len)
+{
+    int ret=LZ4_decompress_safe((const char *)src,(char *)dst,src_len,dst_len);
+    if(ret <= 0)
+    {
+        ret=0;
+    }
+    return ret;
+}

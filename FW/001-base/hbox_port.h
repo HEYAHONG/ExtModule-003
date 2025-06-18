@@ -30,5 +30,9 @@
  */
 #define HRUNTIME_USING_SYMBOL_SECTION 1
 
+/*
+ * LZ4使用最小内存(1KB)
+ */
+#define LZ4_MEMORY_USAGE LZ4_MEMORY_USAGE_MIN
 
 #endif

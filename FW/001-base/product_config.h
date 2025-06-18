@@ -54,6 +54,18 @@ bool product_config_private_channel_addr(uint8_t *addr,size_t addr_len,const uin
  */
 bool product_config_data_chacha20_crypto(uint8_t *data,size_t data_len,uint32_t counter,const uint8_t *nonce,size_t nonce_len);
 
+/*
+ * 数据压缩，返回压缩后的大小(0表示失败)
+ * 当数据中有大量的重复数据时，推荐通过压缩减少重复数据(也可减少加密通信时密钥流泄露的风险)。注意:使用压缩时需确保至少剩余1.5KB的栈空间
+ */
+size_t product_config_data_compress(void *dst,size_t dst_len,const void *src,size_t src_len);
+
+
+/*
+ * 数据解压缩，返回解压缩后的大小(0表示失败)
+ */
+size_t product_config_data_uncompress(void *dst,size_t dst_len,const void *src,size_t src_len);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
