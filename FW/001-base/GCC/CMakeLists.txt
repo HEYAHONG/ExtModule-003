@@ -39,6 +39,7 @@ set(CMAKE_C_FLAGS " ${CMAKE_C_FLAGS} \
 		-march=armv6-m \
 		-specs=nano.specs \
 		-Wno-restrict\
+		-flto\
 		 ")
 set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} \
                 -Wall \
@@ -53,6 +54,7 @@ set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} \
                 -Wno-psabi \
                 -march=armv6-m \
 		-specs nano.specs \
+		-flto \
                  " )
 set(CMAKE_EXE_LINKER_FLAGS " ${CMAKE_EXE_LINKER_FLAGS}\
 		-mthumb \
@@ -61,6 +63,7 @@ set(CMAKE_EXE_LINKER_FLAGS " ${CMAKE_EXE_LINKER_FLAGS}\
 		-T${CMAKE_CURRENT_SOURCE_DIR}/py32f030x8.ld \
 		-Wl,--warn-common \
 		-Wl,-Map,${PROJECT_NAME}.map \
+		-flto \
 		")
 
 set(BUILD_SHARED_LIBS OFF)
