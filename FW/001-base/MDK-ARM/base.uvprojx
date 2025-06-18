@@ -1010,6 +1010,51 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_gzwrite.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_bitstream.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_bitstream.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_mask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_mask.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_mmask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_mmask.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_mqrspec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_mqrspec.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_qrencode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_qrencode.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_qrinput.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_qrinput.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_qrspec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_qrspec.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_rsecc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_rsecc.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_split.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_split.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
