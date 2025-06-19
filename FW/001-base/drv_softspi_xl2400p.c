@@ -108,23 +108,55 @@ static void xl2400p_reset(void)
 static void xl2400p_defaults_state()
 {
     {
+        //发送上电数据帧
+        xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL);
+        xl2400p_set_is_prx(false);
+        xl2400p_set_soft_ce(true);
+        {
+            //上电消息(4字节头(默认设置为0与其它数据区分)+16字节产品ID(UUID)+12字节自定义数据(加密))
+            uint8_t data[32]= {0};
+            {
+                //填写头(设置为0与其它数据包区分)
+                memset(data,0,4);
+            }
+            {
+                //填充产品ID
+                size_t product_id_len=0;
+                memcpy(&data[4],product_config_product_id_get(&product_id_len),product_id_len);
+            }
+            {
+                //填写自定义数据,通常用于识别(用户可自行定义)
+                /*
+                 * 默认自定义数据:hello（6字节）+私有地址(6字节,不足6字节需要填充)
+                 */
+                strcpy((char *)&data[20],"hello");
+                product_config_private_channel_addr(&data[26],6,(const uint8_t *)UID_BASE,16);
+
+                /*
+                 * 对自定义数据进行chacha20加密
+                 */
+                uint32_t counter=data[0]*(1<<0)+data[1]*(1<<8)+data[2]*(1<<16)+data[3]*(1<<24);
+                product_config_data_chacha20_crypto(&data[20],12,counter,NULL,0);
+            }
+            xl2400p_write_tx_fifo_noack(data,sizeof(data));
+        }
+        HAL_Delay(1);
+
+        //启动发送后停止发送
+        xl2400p_set_soft_ce(false);
+        HAL_Delay(5);
+
+        //清空缓冲
+        xl2400p_flush_rx();
+        xl2400p_flush_tx();
+        xl2400p_set_rf_status(0x70);
+    }
+    {
         //接收状态
         xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL-1);
         xl2400p_set_is_prx(true);
         xl2400p_set_soft_ce(true);
     }
-
-//    {
-//        //发送状态
-//        xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL);
-//        xl2400p_set_is_prx(false);
-//        xl2400p_set_soft_ce(true);
-//        {
-//            //发送数据
-//            uint8_t data[17]= {0xFE,0x05,0x07};
-//            xl2400p_write_tx_fifo(data,sizeof(data));
-//        }
-//    }
 
 }
 
@@ -260,11 +292,25 @@ static void xl2400p_loop(void)
                 //有数据进入FIFO
                 uint8_t px=((status >> 1)&0x7); //PIPE编号
                 uint8_t datalen=xl2400p_read_rx_fifo_length();
-                uint8_t data[128]= {0};
-                xl2400p_read_rx_fifo(data,datalen);
-                if(xl2400p_loop_data_handler!=NULL)
+                if((hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_FEATURE)&(1 << 5))!=0)
                 {
-                    xl2400p_loop_data_handler(data,datalen,px);
+                    //128字节包
+                    uint8_t data[128]= {0};
+                    xl2400p_read_rx_fifo(data,datalen);
+                    if(xl2400p_loop_data_handler!=NULL)
+                    {
+                        xl2400p_loop_data_handler(data,datalen,px);
+                    }
+                }
+                else
+                {
+                    //32字节包
+                    uint8_t data[32]= {0};
+                    xl2400p_read_rx_fifo(data,datalen);
+                    if(xl2400p_loop_data_handler!=NULL)
+                    {
+                        xl2400p_loop_data_handler(data,datalen,px);
+                    }
                 }
                 if(xl2400p_loop_event_handler!=NULL)
                 {

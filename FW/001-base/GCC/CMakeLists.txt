@@ -72,6 +72,7 @@ add_definitions(
 -DUSE_HAL_DRIVER
 -DPY32F030x8
 -DHBOX_CONFIG_HEADER=hbox_port.h
+-DFORBID_VECT_TAB_MIGRATION=1
 )
 #设置头文件目录
 include_directories(
