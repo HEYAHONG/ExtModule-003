@@ -51,6 +51,26 @@ int main(void)
     /* Configure the system clock */
     APP_SystemClockConfig();
 
+    {
+        /*
+         * 初始化时间为2020-01-01 00:00:00
+         * 主要用于初始化随机数
+         */
+        hsettimeofday_timeval_t tv= {0};
+        tv.tv_sec=1577808000;
+        hsettimeofday(&tv,NULL);
+    }
+
+    {
+        /*
+         * 初始化随机数
+         */
+        HAL_Delay(1);
+        uint8_t temp[4]= {0};
+        hgetrandom(temp,sizeof(temp),0); //读取一次随机数,进行内部初始化
+        srand(hcrc_crc32_fast_calculate((const uint8_t *)UID_BASE,16)); //初始化随机数种子
+    }
+
     //初始化hcpprt
     hcpprt_init();
 
