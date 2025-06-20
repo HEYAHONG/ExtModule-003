@@ -184,6 +184,21 @@ size_t product_config_data_compress(void *dst,size_t dst_len,const void *src,siz
     return ret;
 }
 
+size_t product_config_data_try_compress(void *dst,size_t dst_len,const void *src,size_t src_len)
+{
+    size_t ret=product_config_data_compress(dst,dst_len,src,src_len);
+    if(ret > src_len)
+    {
+        //大于源大小，不尝试压缩
+        ret=0;
+    }
+    if(ret==0)
+    {
+        memcpy(dst,src,dst_len<src_len?dst_len:src_len);
+    }
+    return ret;
+}
+
 size_t product_config_data_uncompress(void *dst,size_t dst_len,const void *src,size_t src_len)
 {
     int ret=LZ4_decompress_safe((const char *)src,(char *)dst,src_len,dst_len);

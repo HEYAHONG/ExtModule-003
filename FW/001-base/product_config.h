@@ -62,9 +62,18 @@ size_t product_config_data_compress(void *dst,size_t dst_len,const void *src,siz
 
 
 /*
+ * 数据尝试压缩，当压缩失败时或者压缩后大小大于原大小时，复制源数据到目标缓冲区
+ * 要求同product_config_data_compress
+ */
+size_t product_config_data_try_compress(void *dst,size_t dst_len,const void *src,size_t src_len);
+
+
+/*
  * 数据解压缩，返回解压缩后的大小(0表示失败)
  */
 size_t product_config_data_uncompress(void *dst,size_t dst_len,const void *src,size_t src_len);
+
+
 
 #ifdef __cplusplus
 }
