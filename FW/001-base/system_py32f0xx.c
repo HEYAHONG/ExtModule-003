@@ -211,6 +211,15 @@ int entry(void)
 }
 #endif /* __ICCARM__ */
 #endif /* VECT_TAB_SRAM */
+#else
+#if defined(__GNUC__)
+extern int main(void);
+extern int entry(void);
+int entry(void)
+{
+    return main();
+}
+#endif
 #endif /* FORBID_VECT_TAB_MIGRATION */
 
 /************************ (C) COPYRIGHT Puya *****END OF FILE******************/
