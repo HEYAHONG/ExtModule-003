@@ -23,7 +23,8 @@ CheckTool mkdir
 [ $? -eq 0 ] || exit;
 CheckTool rsync
 [ $? -eq 0 ] || exit;
-
+CheckTool sed
+[ $? -eq 0 ] || exit;
 
 #获取当前目录
 slef_path=
@@ -51,18 +52,24 @@ fi
 
 echo 当前目录为${script_dir}.
 
-if [ -d "${script_dir}/HCppBox" ]
+if [ -d "${script_dir}/argtable3" ]
 then
-	pushd "${script_dir}/HCppBox"
-	git pull			
+	pushd "${script_dir}/argtable3"
+	git pull
 	popd
 else
-	git clone -b master https://github.com/HEYAHONG/HCppBox.git "${script_dir}/HCppBox" 
+	git clone  https://github.com/argtable/argtable3 "${script_dir}/argtable3"
 fi
 
 
-if [ -f "${script_dir}/HCppBox/CMakeLists.txt" ]
+if [ -f "${script_dir}/argtable3/LICENSE" ]
 then
-	rm -rf "${script_dir}/master/" 2>/dev/null
-	rsync -rl --progress --delete --exclude='.git' --exclude='*.png' --exclude='*.jpg' --exclude=htools --exclude="hcppbox" --exclude="hrc"  --exclude="doc" --exclude="test" --exclude="*.md"  "${script_dir}/HCppBox/" "${script_dir}/master/"
-fi 
+	rsync -rl --progress  "${script_dir}/argtable3/LICENSE" "${script_dir}/"
+	rsync -rl --progress  --include="*.h" --include="*.c" --exclude="*" "${script_dir}/argtable3/src/" "${script_dir}/"
+	for c_file in `ls *.c`
+	do
+		sed -i "s/<err.h>/\"err.h\"/g" ${c_file}
+		cp "argtable3_template_c" "../../h3rdparty_argtable3_${c_file}"
+		sed -i "s/argtable3_filename/${c_file}/g"  "../..//h3rdparty_argtable3_${c_file}"
+	done
+fi
