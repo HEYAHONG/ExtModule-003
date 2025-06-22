@@ -23,6 +23,12 @@ extern "C"
 #include "wrapper/hrealloc.h"
 #include "wrapper/habort.h"
 #include "wrapper/hexit.h"
+#include "wrapper/hfputs.h"
+#include "wrapper/hvfprintf.h"
+#include "wrapper/hputs.h"
+#include "wrapper/hferror.h"
+#include "wrapper/hfread.h"
+#include "wrapper/hfwrite.h"
 
 #ifdef __cplusplus
 }

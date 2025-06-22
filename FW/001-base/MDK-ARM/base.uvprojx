@@ -992,6 +992,21 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_argtable3_argtable3.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_lz4_lz4file.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_lz4_lz4file.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_lz4_lz4frame.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_lz4_lz4frame.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_lz4_xxhash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_lz4_xxhash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
