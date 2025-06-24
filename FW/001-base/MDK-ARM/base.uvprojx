@@ -437,6 +437,11 @@
               <FileType>1</FileType>
               <FilePath>..\drv_product.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv_led.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

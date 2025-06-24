@@ -1,6 +1,7 @@
 #include "main.h"
 #include "hbox.h"
 #include "product_config.h"
+#include "drv_led.h"
 
 
 static void xl2400p_reset(void)
@@ -290,6 +291,7 @@ static void xl2400p_loop(void)
             if((status&(1<< XL2400P_LOOP_EVENT_RX_DS))!=0)
             {
                 //有数据进入FIFO
+                led_trigger_net_rx();
                 uint8_t px=((status >> 1)&0x7); //PIPE编号
                 uint8_t datalen=xl2400p_read_rx_fifo_length();
                 if((hsoftspi_xl2400p_read_register(XL2400P_R_REGISTER| XL2400P_FEATURE)&(1 << 5))!=0)
@@ -324,6 +326,7 @@ static void xl2400p_loop(void)
             if(((status&(1<< XL2400P_LOOP_EVENT_TX_DS))!=0))
             {
                 //发送完成
+                led_trigger_net_tx();
                 if(xl2400p_loop_event_handler!=NULL)
                 {
                     xl2400p_loop_event_handler(XL2400P_LOOP_EVENT_TX_DS);
