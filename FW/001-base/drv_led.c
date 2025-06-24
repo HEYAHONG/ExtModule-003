@@ -61,10 +61,18 @@ void led_set_net_mask(uint32_t mask)
 void led_trigger_net_rx(void)
 {
     net_rx_trigger_count++;
+    if(net_rx_trigger_count > 5)
+    {
+        net_rx_trigger_count=5;
+    }
 }
 void led_trigger_net_tx(void)
 {
     net_tx_trigger_count++;
+    if(net_tx_trigger_count > 5)
+    {
+        net_tx_trigger_count=5;
+    }
 }
 void  led_loop(const hruntime_function_t *func)
 {
