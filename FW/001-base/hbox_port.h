@@ -35,4 +35,30 @@
  */
 #define LZ4_MEMORY_USAGE LZ4_MEMORY_USAGE_MIN
 
+/*
+ * 自定义abort
+ */
+#define HABORT hbox_abort
+
+/*
+ * 自定义exit
+ */
+#define HEXIT hbox_exit
+
+/*
+ * 自定义fputs
+ */
+#define HFPUTS hbox_fputs
+
+/*
+ * 自定义vfprintf
+ */
+#define HVFPRINTF hbox_vfprintf
+
+/*
+ * 自定义puts
+ */
+#define HPUTS hbox_puts
+
+
 #endif

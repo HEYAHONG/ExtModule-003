@@ -1,4 +1,8 @@
 
+/*
+ * 启用半主机模式
+ */
+__asm (".global __use_no_semihosting\n\t");  
 
 void _sys_exit(int x)
 {

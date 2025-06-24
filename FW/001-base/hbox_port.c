@@ -32,3 +32,45 @@ void HDEFAULTS_MUTEX_UNLOCK()
 }
 #endif
 
+#ifdef HABORT
+void HABORT()
+{
+    NVIC_SystemReset();
+}
+#endif
+
+#ifdef HEXIT
+void HEXIT(int exit_code)
+{
+    (void)exit_code;
+    habort();
+}
+#endif
+
+#ifdef HFPUTS
+int HFPUTS( const char* str, FILE* stream )
+{
+    (void)str;
+    (void)stream;
+    return EOF;
+}
+#endif
+
+#ifdef HVFPRINTF
+int HVFPRINTF(FILE* stream,const char* format,va_list vlist)
+{
+    (void)stream;
+    (void)format;
+    (void)vlist;
+    return EOF;
+}
+#endif
+
+#ifdef HPUTS
+int HPUTS( const char* str)
+{
+    (void)str;
+    return EOF;
+}
+#endif
+
