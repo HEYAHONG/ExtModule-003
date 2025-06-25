@@ -7,6 +7,17 @@ XL2409可看作MCU与[XL2400P](https://www.xinlinggo.com/pd.jsp?id=42)通过SIP�
 - 64K Flash
 - 8K SRAM
 
+# LED
+
+默认情况下,本工程定义4个LED(均采用高电平驱动)。
+
+| 引脚 | 默认功能    | 说明                           |
+| ---- | ----------- | ------------------------------ |
+| PB0  | NET_LED     | 网络状态指示灯                 |
+| PB1  | SYS_LED     | 系统状态指示灯                 |
+| PA6  | NET_RX_LED  | 网络接收指示灯                 |
+| PA7  | NET_TX_LED  | 网络发送成功指示灯             |
+
 # PSRAM
 
 PSRAM为可选硬件(外挂),可用于提供数据存储功能。
@@ -16,6 +27,17 @@ PSRAM为可选硬件(外挂),可用于提供数据存储功能。
 对于相对复杂的网络(如网状网络、树型网络)，每个带路由功能的节点均需维护一份网络拓扑数据，XL2409的RAM可能不够，此时需要PSRAM用于数据存储。
 
 默认情况下,采用8M的PSRAM。
+
+## 引脚分配
+
+PSRAM采用SPI接口,PSRAM最大速度33M bps。由于XL2409本身速度不高,故而SPI操作无需延时。
+
+| 引脚 | 默认功能   | 说明      |
+| ---- | ---------- | --------- |
+| PA15 | PSRAM_CSN  | PSRAM片选 |
+| PB3  | PSRAM_SCK  | PSRAM时钟 |
+| PB4  | PSRAM_MISO | PSRAM SO  |
+| PB5  | PSRAM_MOSI | PSRAM SI  |
 
 ## 分区
 

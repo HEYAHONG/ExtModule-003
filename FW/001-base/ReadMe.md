@@ -32,6 +32,10 @@
 | PB1  | SYS_LED     | 系统状态指示灯                 |
 | PA6  | NET_RX_LED  | 网络接收指示灯                 |
 | PA7  | NET_TX_LED  | 网络发送成功指示灯             |
+| PA15 | PSRAM_CSN   | PSRAM片选                      |
+| PB3  | PSRAM_SCK   | PSRAM时钟                      |
+| PB4  | PSRAM_MISO  | PSRAM SO                       |
+| PB5  | PSRAM_MOSI  | PSRAM SI                       |
 
 # XL2400P
 

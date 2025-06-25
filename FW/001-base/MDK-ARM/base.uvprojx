@@ -442,6 +442,11 @@
               <FileType>1</FileType>
               <FilePath>..\drv_led.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_psram.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv_psram.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
