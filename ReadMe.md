@@ -15,6 +15,7 @@
 - XL2409 规格书v1.2a.pdf
 - XL2400P规格书V1.0a 1.pdf
 - XL2400P_Register Map_V1.1.pdf
+- APM_PSRAM_E3_QSPI (APS6404L-3SQN KGD_PKG) v2.7.pdf
 
 # 目录结构
 
