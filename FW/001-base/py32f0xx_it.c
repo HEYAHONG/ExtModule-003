@@ -31,6 +31,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "py32f0xx_it.h"
+#include "drv_uart.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
@@ -89,5 +90,21 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file.                                          */
 /******************************************************************************/
+/**
+  * @brief This function handles USART1 Interrupt .
+  */
+void USART1_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(uart1_get_handle());
+}
+
+/**
+  * @brief This function handles USART2 Interrupt .
+  */
+void USART2_IRQHandler(void)
+{
+    HAL_UART_IRQHandler(uart2_get_handle());
+}
+
 
 /************************ (C) COPYRIGHT Puya *****END OF FILE******************/

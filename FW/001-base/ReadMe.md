@@ -36,6 +36,10 @@
 | PB3  | PSRAM_SCK   | PSRAM时钟                      |
 | PB4  | PSRAM_MISO  | PSRAM SO                       |
 | PB5  | PSRAM_MOSI  | PSRAM SI                       |
+| PA2  | U1TX        | 串口1TX                        |
+| PA3  | U1RX        | 串口1RX                        |
+| PA4  | U2TX        | 串口2TX                        |
+| PA5  | U2RX        | 串口2RX                        |
 
 # XL2400P
 

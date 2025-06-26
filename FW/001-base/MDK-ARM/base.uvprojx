@@ -447,6 +447,11 @@
               <FileType>1</FileType>
               <FilePath>..\drv_psram.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv_uart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
