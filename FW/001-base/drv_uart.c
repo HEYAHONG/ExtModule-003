@@ -91,6 +91,22 @@ void  uart_init(const hruntime_function_t *func)
     }
 }
 HRUNTIME_INIT_EXPORT(uart,0,uart_init,NULL);
+bool uart1_tx(uint8_t *buffer,size_t buffer_size,size_t timeout)
+{
+    if(buffer!=NULL && buffer_size!=0)
+    {
+        return HAL_OK==HAL_UART_Transmit(&uart1_handle,(uint8_t *)buffer,buffer_size,timeout);
+    }
+    return false;
+}
+bool uart2_tx(uint8_t *buffer,size_t buffer_size,size_t timeout)
+{
+    if(buffer!=NULL && buffer_size!=0)
+    {
+        return HAL_OK==HAL_UART_Transmit(&uart2_handle,(uint8_t *)buffer,buffer_size,timeout);
+    }
+    return false;
+}
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 static uint8_t uart1_rx_buffer[64]= {0};
@@ -124,11 +140,15 @@ void  uart_loop(const hruntime_function_t *func)
                 else
                 {
                     //处理接收的字节
+                    HAL_UART_AbortReceive_IT(&uart1_handle);
                     if(uart1_rx_handler!=NULL)
                     {
                         uart1_rx_handler(uart1_rx_buffer,rx_size);
                     }
-                    HAL_UART_AbortReceive_IT(&uart1_handle);
+                    else
+                    {
+                        uart1_tx(uart1_rx_buffer,rx_size,10+rx_size);
+                    }
                 }
             }
             if((state)==HAL_UART_STATE_READY)
@@ -141,6 +161,10 @@ void  uart_loop(const hruntime_function_t *func)
                 if(rx_size!=0 && uart1_rx_handler!=NULL)
                 {
                     uart1_rx_handler(uart1_rx_buffer,rx_size);
+                }
+                else
+                {
+                    uart1_tx(uart1_rx_buffer,rx_size,10+rx_size);
                 }
                 HAL_UART_AbortReceive_IT(&uart1_handle);
                 HAL_UART_Receive_IT(&uart1_handle,uart1_rx_buffer,sizeof(uart1_rx_buffer));
@@ -159,11 +183,15 @@ void  uart_loop(const hruntime_function_t *func)
                 else
                 {
                     //处理接收的字节
+                    HAL_UART_AbortReceive_IT(&uart2_handle);
                     if(uart2_rx_handler!=NULL)
                     {
                         uart2_rx_handler(uart2_rx_buffer,rx_size);
                     }
-                    HAL_UART_AbortReceive_IT(&uart2_handle);
+                    else
+                    {
+                        uart2_tx(uart2_rx_buffer,rx_size,10+rx_size);
+                    }
                 }
             }
             if((state)==HAL_UART_STATE_READY)
@@ -176,6 +204,10 @@ void  uart_loop(const hruntime_function_t *func)
                 if(rx_size!=0 && uart2_rx_handler!=NULL)
                 {
                     uart2_rx_handler(uart2_rx_buffer,rx_size);
+                }
+                else
+                {
+                    uart2_tx(uart2_rx_buffer,rx_size,10+rx_size);
                 }
                 HAL_UART_AbortReceive_IT(&uart2_handle);
                 HAL_UART_Receive_IT(&uart2_handle,uart2_rx_buffer,sizeof(uart2_rx_buffer));
