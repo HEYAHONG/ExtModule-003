@@ -69,6 +69,9 @@ void  uart_init(const hruntime_function_t *func)
         uart1_handle.Init.OverSampling = UART_OVERSAMPLING_16;
         uart1_handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
         HAL_UART_Init(&uart1_handle);
+        HAL_NVIC_SetPriority(USART1_IRQn, 0, 1);
+        HAL_NVIC_EnableIRQ(USART1_IRQn);
+
     }
 
     {
@@ -83,13 +86,103 @@ void  uart_init(const hruntime_function_t *func)
         uart2_handle.Init.OverSampling = UART_OVERSAMPLING_16;
         uart2_handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
         HAL_UART_Init(&uart2_handle);
+        HAL_NVIC_SetPriority(USART2_IRQn, 0, 1);
+        HAL_NVIC_EnableIRQ(USART2_IRQn);
     }
 }
 HRUNTIME_INIT_EXPORT(uart,0,uart_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
+static uint8_t uart1_rx_buffer[64]= {0};
+static uint8_t uart2_rx_buffer[64]= {0};
+static uart_rx_handler_t uart1_rx_handler=NULL;
+static uart_rx_handler_t uart2_rx_handler=NULL;
+void uart1_set_rx_handler(uart_rx_handler_t handler)
+{
+    uart1_rx_handler=handler;
+}
+void uart2_set_rx_handler(uart_rx_handler_t handler)
+{
+    uart2_rx_handler=handler;
+}
 void  uart_loop(const hruntime_function_t *func)
 {
+    static hdefaults_tick_t last_tick=0;
+    if(hdefaults_tick_get()-last_tick > 1)
+    {
+        last_tick=hdefaults_tick_get();
+        {
+            uint8_t state=HAL_UART_GetState(&uart1_handle);
+            static uint8_t last_rx_size=0;
+            uint8_t rx_size=uart1_handle.RxXferSize-uart1_handle.RxXferCount;
+            if(rx_size > 0)
+            {
+                if(last_rx_size!=rx_size)
+                {
+                    last_rx_size=rx_size;
+                }
+                else
+                {
+                    //处理接收的字节
+                    if(uart1_rx_handler!=NULL)
+                    {
+                        uart1_rx_handler(uart1_rx_buffer,rx_size);
+                    }
+                    HAL_UART_AbortReceive_IT(&uart1_handle);
+                }
+            }
+            if((state)==HAL_UART_STATE_READY)
+            {
+                HAL_UART_Receive_IT(&uart1_handle,uart1_rx_buffer,sizeof(uart1_rx_buffer));
+            }
+            if((state)==HAL_UART_STATE_TIMEOUT || (state)==HAL_UART_STATE_ERROR)
+            {
+                //运行过程中出现超时或者错误
+                if(rx_size!=0 && uart1_rx_handler!=NULL)
+                {
+                    uart1_rx_handler(uart1_rx_buffer,rx_size);
+                }
+                HAL_UART_AbortReceive_IT(&uart1_handle);
+                HAL_UART_Receive_IT(&uart1_handle,uart1_rx_buffer,sizeof(uart1_rx_buffer));
+            }
+        }
+        {
+            uint8_t state=HAL_UART_GetState(&uart2_handle);
+            static uint8_t last_rx_size=0;
+            uint8_t rx_size=uart2_handle.RxXferSize-uart2_handle.RxXferCount;
+            if(rx_size > 0)
+            {
+                if(last_rx_size!=rx_size)
+                {
+                    last_rx_size=rx_size;
+                }
+                else
+                {
+                    //处理接收的字节
+                    if(uart2_rx_handler!=NULL)
+                    {
+                        uart2_rx_handler(uart2_rx_buffer,rx_size);
+                    }
+                    HAL_UART_AbortReceive_IT(&uart2_handle);
+                }
+            }
+            if((state)==HAL_UART_STATE_READY)
+            {
+                HAL_UART_Receive_IT(&uart2_handle,uart2_rx_buffer,sizeof(uart2_rx_buffer));
+            }
+            if((state)==HAL_UART_STATE_TIMEOUT || (state)==HAL_UART_STATE_ERROR)
+            {
+                //运行过程中出现超时或者错误
+                if(rx_size!=0 && uart2_rx_handler!=NULL)
+                {
+                    uart2_rx_handler(uart2_rx_buffer,rx_size);
+                }
+                HAL_UART_AbortReceive_IT(&uart2_handle);
+                HAL_UART_Receive_IT(&uart2_handle,uart2_rx_buffer,sizeof(uart2_rx_buffer));
+            }
+        }
+    }
+
 }
 HRUNTIME_LOOP_EXPORT(uart,0,uart_loop,NULL);
 #endif

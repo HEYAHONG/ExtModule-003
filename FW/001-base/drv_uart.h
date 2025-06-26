@@ -11,6 +11,10 @@ extern "C"
 UART_HandleTypeDef * uart1_get_handle(void);
 UART_HandleTypeDef * uart2_get_handle(void);
 
+typedef void (*uart_rx_handler_t)(uint8_t *data,size_t length);
+void uart1_set_rx_handler(uart_rx_handler_t handler);
+void uart2_set_rx_handler(uart_rx_handler_t handler);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
