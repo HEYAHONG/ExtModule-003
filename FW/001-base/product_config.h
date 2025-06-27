@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 #include "string.h"
+#include "main.h"
 #include "hbox.h"
 #ifdef __cplusplus
 extern "C"
@@ -22,6 +23,20 @@ extern "C"
  */
 #ifdef  PRODUCT_PSK
 #define PRODUCT_NAME ExtModule_003_PSK
+#endif
+	
+/*
+ * 产品启用console(0=不使能,1=使能)
+ */
+#ifndef PRODUCT_CONSOLE_ENABLE
+#define PRODUCT_CONSOLE_ENABLE 1
+#endif
+
+/*
+ * 产品启用SHELL(0=不使能,1=使能)
+ */
+#ifndef PRODUCT_SHELL_ENABLE
+#define PRODUCT_SHELL_ENABLE 0
 #endif
 
 /*

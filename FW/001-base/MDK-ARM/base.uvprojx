@@ -452,6 +452,11 @@
               <FileType>1</FileType>
               <FilePath>..\drv_uart.c</FilePath>
             </File>
+            <File>
+              <FileName>service_shell.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\service_shell.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

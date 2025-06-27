@@ -46,19 +46,23 @@
 #define HEXIT hbox_exit
 
 /*
- * 自定义fputs
+ * 使用自定义的putchar
  */
-#define HFPUTS hbox_fputs
+#define HPUTCHAR hbox_shell_putchar
 
 /*
- * 自定义vfprintf
+ * 使用自定义的getchar
  */
-#define HVFPRINTF hbox_vfprintf
+#define HGETCHAR hbox_shell_getchar
 
 /*
- * 自定义puts
+ * 使用自定义的fwrite
  */
-#define HPUTS hbox_puts
+#define HFWRITE hbox_fwrite
 
+/*
+ * 不启用argtable3
+ */
+#define H3RDPARTY_USING_SYSTEM_ARGTABLE3 1
 
 #endif

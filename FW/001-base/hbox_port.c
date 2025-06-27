@@ -47,30 +47,16 @@ void HEXIT(int exit_code)
 }
 #endif
 
-#ifdef HFPUTS
-int HFPUTS( const char* str, FILE* stream )
+#ifdef HFWRITE
+size_t HFWRITE(const void*buffer,size_t obj_size,size_t obj_count,FILE * stream )
 {
-    (void)str;
+    (void)buffer;
+    (void)obj_size;
+    (void)obj_count;
     (void)stream;
-    return EOF;
+    return 0;
 }
 #endif
 
-#ifdef HVFPRINTF
-int HVFPRINTF(FILE* stream,const char* format,va_list vlist)
-{
-    (void)stream;
-    (void)format;
-    (void)vlist;
-    return EOF;
-}
-#endif
 
-#ifdef HPUTS
-int HPUTS( const char* str)
-{
-    (void)str;
-    return EOF;
-}
-#endif
 
