@@ -457,6 +457,11 @@
               <FileType>1</FileType>
               <FilePath>..\service_shell.c</FilePath>
             </File>
+            <File>
+              <FileName>service_wireless.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\service_wireless.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

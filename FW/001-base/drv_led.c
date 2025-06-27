@@ -17,7 +17,7 @@
 
 
 #ifdef HRUNTIME_USING_INIT_SECTION
-void  led_init(const hruntime_function_t *func)
+static void  led_init(const hruntime_function_t *func)
 {
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -78,7 +78,7 @@ void led_trigger_net_tx(void)
         net_tx_trigger_count=5;
     }
 }
-void  led_loop(const hruntime_function_t *func)
+static void  led_loop(const hruntime_function_t *func)
 {
     static hdefaults_tick_t last_tick=0;
     if(hdefaults_tick_get()-last_tick > 200)

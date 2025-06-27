@@ -130,7 +130,7 @@ size_t psram_size()
 }
 
 #ifdef HRUNTIME_USING_INIT_SECTION
-void  psram_init(const hruntime_function_t *func)
+static void  psram_init(const hruntime_function_t *func)
 {
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -188,7 +188,7 @@ void  psram_init(const hruntime_function_t *func)
 HRUNTIME_INIT_EXPORT(psram,DRV_PSRAM_PRIORITY_LEVEL,psram_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
-void  psram_loop(const hruntime_function_t *func)
+static void  psram_loop(const hruntime_function_t *func)
 {
 }
 HRUNTIME_LOOP_EXPORT(psram,DRV_PSRAM_PRIORITY_LEVEL,psram_loop,NULL);

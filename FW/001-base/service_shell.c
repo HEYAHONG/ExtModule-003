@@ -63,7 +63,7 @@ static void putchar_cb(char c)
     hbox_shell_putchar((uint8_t)c);
 }
 #endif
-void  hbox_shell_init(const hruntime_function_t *func)
+static void  hbox_shell_init(const hruntime_function_t *func)
 {
 #if (PRODUCT_CONSOLE_ENABLE) > 0
     hprintf_set_callback(putchar_cb);
@@ -80,7 +80,7 @@ HRUNTIME_INIT_EXPORT(product,SERVICE_SHELL_PRIORITY_LEVEL,hbox_shell_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 
-void  hbox_shell_loop(const hruntime_function_t *func)
+static void  hbox_shell_loop(const hruntime_function_t *func)
 {
 #if (PRODUCT_SHELL_ENABLE) > 0
     while(hshell_loop(NULL)==0);

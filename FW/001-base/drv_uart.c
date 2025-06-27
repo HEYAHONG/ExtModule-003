@@ -28,7 +28,7 @@ UART_HandleTypeDef * uart2_get_handle(void)
 
 
 #ifdef HRUNTIME_USING_INIT_SECTION
-void  uart_init(const hruntime_function_t *func)
+static void  uart_init(const hruntime_function_t *func)
 {
     {
         __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -125,7 +125,7 @@ void uart2_set_rx_handler(uart_rx_handler_t handler)
 {
     uart2_rx_handler=handler;
 }
-void  uart_loop(const hruntime_function_t *func)
+static void  uart_loop(const hruntime_function_t *func)
 {
     static hdefaults_tick_t last_tick=0;
     if(hdefaults_tick_get()-last_tick > 1)
