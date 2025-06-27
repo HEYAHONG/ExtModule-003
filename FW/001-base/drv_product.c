@@ -1,6 +1,10 @@
 #include "product_config.h"
 #include "hbox.h"
 
+#ifndef DRV_PRODUCT_PRIORITY_LEVEL
+#define DRV_PEODUCT_PRIORITY_LEVEL    4
+#endif
+
 #ifdef HRUNTIME_USING_INIT_SECTION
 void  hproduct_init(const hruntime_function_t *func)
 {
@@ -8,13 +12,13 @@ void  hproduct_init(const hruntime_function_t *func)
     product_config_product_id_get(NULL);
     product_config_product_key_get(NULL);
 }
-HRUNTIME_INIT_EXPORT(product,0,hproduct_init,NULL);
+HRUNTIME_INIT_EXPORT(product,DRV_PEODUCT_PRIORITY_LEVEL,hproduct_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 void  hproduct_loop(const hruntime_function_t *func)
 {
 
 }
-HRUNTIME_LOOP_EXPORT(product,0,hproduct_loop,NULL);
+HRUNTIME_LOOP_EXPORT(product,DRV_PEODUCT_PRIORITY_LEVEL,hproduct_loop,NULL);
 #endif
 

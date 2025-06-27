@@ -2,6 +2,10 @@
 #include "drv_led.h"
 #include "hbox.h"
 
+#ifndef DRV_LED_PRIORITY_LEVEL
+#define DRV_LED_PRIORITY_LEVEL    3
+#endif
+
 #define LED_SYS_GPIO GPIOB
 #define LED_SYS_PIN  GPIO_PIN_1
 #define LED_NET_GPIO GPIOB
@@ -35,7 +39,7 @@ void  led_init(const hruntime_function_t *func)
     HAL_GPIO_WritePin(LED_NET_RX_GPIO, LED_NET_RX_PIN, GPIO_PIN_SET);
 
 }
-HRUNTIME_INIT_EXPORT(led,0,led_init,NULL);
+HRUNTIME_INIT_EXPORT(led,DRV_LED_PRIORITY_LEVEL,led_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 static uint32_t sys_led_mask=0x55555555;
@@ -123,6 +127,6 @@ void  led_loop(const hruntime_function_t *func)
 
     }
 }
-HRUNTIME_LOOP_EXPORT(led,0,led_loop,NULL);
+HRUNTIME_LOOP_EXPORT(led,DRV_LED_PRIORITY_LEVEL,led_loop,NULL);
 #endif
 

@@ -3,6 +3,9 @@
 #include "product_config.h"
 #include "drv_led.h"
 
+#ifndef DRV_XL2400P_PRIORITY_LEVEL
+#define DRV_XL2400P_PRIORITY_LEVEL    15
+#endif
 
 static void xl2400p_reset(void)
 {
@@ -411,7 +414,7 @@ void  hsoftspi_xl2400p_init(const hruntime_function_t *func)
 
     xl2400p_defaults_state();
 }
-HRUNTIME_INIT_EXPORT(softspi_xl2400p,0,hsoftspi_xl2400p_init,NULL);
+HRUNTIME_INIT_EXPORT(softspi_xl2400p,DRV_XL2400P_PRIORITY_LEVEL,hsoftspi_xl2400p_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 void  hsoftspi_xl2400p_loop(const hruntime_function_t *func)
@@ -422,7 +425,7 @@ void  hsoftspi_xl2400p_loop(const hruntime_function_t *func)
     //XL2400PÑ­»·
     xl2400p_loop();
 }
-HRUNTIME_LOOP_EXPORT(softspi_xl2400p,0,hsoftspi_xl2400p_loop,NULL);
+HRUNTIME_LOOP_EXPORT(softspi_xl2400p,DRV_XL2400P_PRIORITY_LEVEL,hsoftspi_xl2400p_loop,NULL);
 #endif
 
 static void hsoftspi_xl2400p_write_byte(uint8_t buff)

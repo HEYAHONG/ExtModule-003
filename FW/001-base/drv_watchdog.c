@@ -1,6 +1,10 @@
 #include "main.h"
 #include "hbox.h"
 
+#ifndef DRV_WATCHDOG_PRIORITY_LEVEL
+#define DRV_WATCHDOG_PRIORITY_LEVEL    0
+#endif
+
 static IWDG_HandleTypeDef   IwdgHandle= {0};
 static void hw_feed()
 {
@@ -27,13 +31,13 @@ void  hwatchdog_init(const hruntime_function_t *func)
     __HAL_DBGMCU_FREEZE_IWDG();                        /* can be removed in the product */
 
 }
-HRUNTIME_INIT_EXPORT(watchdog,0,hwatchdog_init,NULL);
+HRUNTIME_INIT_EXPORT(watchdog,DRV_WATCHDOG_PRIORITY_LEVEL,hwatchdog_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 void  hwatchdog_loop(const hruntime_function_t *func)
 {
 
 }
-HRUNTIME_LOOP_EXPORT(watchdog,0,hwatchdog_loop,NULL);
+HRUNTIME_LOOP_EXPORT(watchdog,DRV_WATCHDOG_PRIORITY_LEVEL,hwatchdog_loop,NULL);
 #endif
 

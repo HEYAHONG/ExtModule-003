@@ -11,6 +11,10 @@
 #define UART2_RX_GPIO GPIOA
 #define UART2_RX_PIN  GPIO_PIN_5
 
+#ifndef DRV_UART_PRIORITY_LEVEL
+#define DRV_UART_PRIORITY_LEVEL    1
+#endif
+
 static UART_HandleTypeDef uart1_handle= {0};
 static UART_HandleTypeDef uart2_handle= {0};
 UART_HandleTypeDef * uart1_get_handle(void)
@@ -90,7 +94,7 @@ void  uart_init(const hruntime_function_t *func)
         HAL_NVIC_EnableIRQ(USART2_IRQn);
     }
 }
-HRUNTIME_INIT_EXPORT(uart,0,uart_init,NULL);
+HRUNTIME_INIT_EXPORT(uart,DRV_UART_PRIORITY_LEVEL,uart_init,NULL);
 bool uart1_tx(uint8_t *buffer,size_t buffer_size,size_t timeout)
 {
     if(buffer!=NULL && buffer_size!=0)
@@ -216,6 +220,6 @@ void  uart_loop(const hruntime_function_t *func)
     }
 
 }
-HRUNTIME_LOOP_EXPORT(uart,0,uart_loop,NULL);
+HRUNTIME_LOOP_EXPORT(uart,DRV_UART_PRIORITY_LEVEL,uart_loop,NULL);
 #endif
 

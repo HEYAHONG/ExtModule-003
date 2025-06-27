@@ -2,6 +2,10 @@
 #include "main.h"
 #include "hbox.h"
 
+#ifndef DRV_PSRAM_PRIORITY_LEVEL
+#define DRV_PSRAM_PRIORITY_LEVEL    2
+#endif
+
 #define PSRAM_CS_GPIO    GPIOA
 #define PSRAM_CS_PIN     GPIO_PIN_15
 #define PSRAM_SCK_GPIO   GPIOB
@@ -10,6 +14,7 @@
 #define PSRAM_MISO_PIN   GPIO_PIN_4
 #define PSRAM_MOSI_GPIO  GPIOB
 #define PSRAM_MOSI_PIN   GPIO_PIN_5
+
 
 #define CS_HIGH()    HAL_GPIO_WritePin(PSRAM_CS_GPIO, PSRAM_CS_PIN, GPIO_PIN_SET)
 #define CS_LOW()     HAL_GPIO_WritePin(PSRAM_CS_GPIO, PSRAM_CS_PIN, GPIO_PIN_RESET)
@@ -180,12 +185,12 @@ void  psram_init(const hruntime_function_t *func)
     }
 
 }
-HRUNTIME_INIT_EXPORT(psram,0,psram_init,NULL);
+HRUNTIME_INIT_EXPORT(psram,DRV_PSRAM_PRIORITY_LEVEL,psram_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 void  psram_loop(const hruntime_function_t *func)
 {
 }
-HRUNTIME_LOOP_EXPORT(psram,0,psram_loop,NULL);
+HRUNTIME_LOOP_EXPORT(psram,DRV_PSRAM_PRIORITY_LEVEL,psram_loop,NULL);
 #endif
 
