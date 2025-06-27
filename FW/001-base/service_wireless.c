@@ -52,7 +52,7 @@ void xl2400p_loop_data_handler(uint8_t *data,size_t datalen,uint8_t px)
             xl2400p_get_rx_addr(px,pipe_addr,sizeof(pipe_addr));
             if(memcmp(public_addr,pipe_addr,sizeof(pipe_addr))!=0)
             {
-                //不是公共通道地址，可能是正在发送其它通道的数据将通道0作为了ACK。
+                //不是公共通道地址，可能是正在发送其它通道的数据将通道0作为了ACK接收通道。
                 break;
             }
         }
