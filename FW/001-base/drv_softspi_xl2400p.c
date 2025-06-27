@@ -167,6 +167,7 @@ static void xl2400p_defaults_state()
 /*
  * XL2400P的寄存器是否变化
  */
+#if (PRODUCT_XL2400P_REGISTER_CHECK_ENABLE) > 0
 static bool xl2400p_register_table_dirty=true;
 static uint8_t xl2400p_register_cfg_top[3]= {0};
 static uint8_t xl2400p_register_en_aa[6]= {0};
@@ -271,6 +272,7 @@ static void hsoftspi_xl2400p_register_check(void)
         }
     }
 }
+#endif
 
 static xl2400p_loop_event_handler_t xl2400p_loop_event_handler=NULL;
 void xl2400p_loop_set_event_handler(xl2400p_loop_event_handler_t evt_handler)
@@ -419,8 +421,10 @@ HRUNTIME_INIT_EXPORT(softspi_xl2400p,DRV_XL2400P_PRIORITY_LEVEL,hsoftspi_xl2400p
 #ifdef HRUNTIME_USING_LOOP_SECTION
 void  hsoftspi_xl2400p_loop(const hruntime_function_t *func)
 {
+#if (PRODUCT_XL2400P_REGISTER_CHECK_ENABLE) > 0
     //检查寄存器，当寄存器意外改变时复位并恢复相应寄存器
     hsoftspi_xl2400p_register_check();
+#endif
 
     //XL2400P循环
     xl2400p_loop();
@@ -482,11 +486,13 @@ void hsoftspi_xl2400p_write_register(uint8_t RF_Reg,uint8_t W_Data)
     hsoftspi_xl2400p_write_byte(RF_Reg);//写入地址
     hsoftspi_xl2400p_write_byte(W_Data);//写入数据
     CSN_High();//写入完成拉高片选
+#if (PRODUCT_XL2400P_REGISTER_CHECK_ENABLE) > 0
     if(RF_Reg >= XL2400P_W_REGISTER && RF_Reg < XL2400P_W_REGISTER*2)
     {
         //标记寄存器已修改
         xl2400p_register_table_dirty=true;
     }
+#endif
 }
 
 
@@ -513,11 +519,13 @@ void hsoftspi_xl2400p_write_register_buffer(uint8_t RF_Reg, uint8_t *pBuff, uint
         hsoftspi_xl2400p_write_byte(rTemp);
     }
     CSN_High();
+#if (PRODUCT_XL2400P_REGISTER_CHECK_ENABLE) > 0
     if(RF_Reg >= XL2400P_W_REGISTER && RF_Reg < XL2400P_W_REGISTER*2)
     {
         //标记寄存器已修改
         xl2400p_register_table_dirty=true;
     }
+#endif
 }
 
 

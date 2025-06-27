@@ -24,6 +24,13 @@ extern "C"
 #ifdef  PRODUCT_PSK
 #define PRODUCT_NAME ExtModule_003_PSK
 #endif
+
+/*
+ * 产品启用xl2400p寄存器检查
+ */
+#ifndef PRODUCT_XL2400P_REGISTER_CHECK_ENABLE
+#define PRODUCT_XL2400P_REGISTER_CHECK_ENABLE 0
+#endif
 	
 /*
  * 产品启用console(0=不使能,1=使能)
