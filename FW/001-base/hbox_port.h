@@ -65,4 +65,11 @@
  */
 #define H3RDPARTY_USING_SYSTEM_ARGTABLE3 1
 
+/*
+ * 关闭部分printf功能节省空间
+ */
+#define PRINTF_DISABLE_SUPPORT_FLOAT       1
+#define PRINTF_DISABLE_SUPPORT_EXPONENTIAL 1
+#define PRINTF_DISABLE_SUPPORT_PTRDIFF_T   1
+
 #endif

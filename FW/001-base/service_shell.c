@@ -2,6 +2,7 @@
 #include "main.h"
 #include "hbox.h"
 #include "drv_uart.h"
+#include "drv_psram.h"
 
 
 #ifndef SERVICE_SHELL_PRIORITY_LEVEL
@@ -65,7 +66,7 @@ static void putchar_cb(char c)
 void  hbox_shell_init(const hruntime_function_t *func)
 {
 #if (PRODUCT_CONSOLE_ENABLE) > 0
-	  hprintf_set_callback(putchar_cb);
+    hprintf_set_callback(putchar_cb);
 #endif
 #if (PRODUCT_SHELL_ENABLE) > 0
     uart1_set_rx_handler(uart_rx_handler);
@@ -73,6 +74,7 @@ void  hbox_shell_init(const hruntime_function_t *func)
     HSHELL_COMMANDS_REGISTER(NULL);
 #endif
     console_printf("console init!");
+    console_printf("psram: %d kbytes",psram_size()/1024);
 }
 HRUNTIME_INIT_EXPORT(product,SERVICE_SHELL_PRIORITY_LEVEL,hbox_shell_init,NULL);
 #endif

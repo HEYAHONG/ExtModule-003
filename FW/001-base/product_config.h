@@ -31,7 +31,7 @@ extern "C"
 #ifndef PRODUCT_XL2400P_REGISTER_CHECK_ENABLE
 #define PRODUCT_XL2400P_REGISTER_CHECK_ENABLE 0
 #endif
-	
+
 /*
  * 产品启用console(0=不使能,1=使能)
  */
