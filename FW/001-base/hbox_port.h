@@ -72,4 +72,10 @@
 #define PRINTF_DISABLE_SUPPORT_EXPONENTIAL 1
 #define PRINTF_DISABLE_SUPPORT_PTRDIFF_T   1
 
+/*
+ * Ä¬ÈÏÈí¼þÐéÄâÄÚ´æ
+ */
+struct hsoftwarevirtualmemory_map_item;
+extern const struct hsoftwarevirtualmemory_map_item * const hbox_vm_map;
+
 #endif
