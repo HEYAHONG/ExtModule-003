@@ -5,6 +5,11 @@
 #define SERVICE_WIRELESS_PRIORITY_LEVEL    31
 #endif
 
+/*
+ * 发送时的序号
+ */
+static uint16_t wireless_frame_seq=0;
+
 void xl2400p_loop_event_handler(xl2400p_loop_event_t evt)
 {
     {
@@ -18,11 +23,13 @@ void xl2400p_loop_event_handler(xl2400p_loop_event_t evt)
         break;
         case XL2400P_LOOP_EVENT_TX_DS:
         {
+            wireless_frame_seq++;
             console_printf("wireless: event TX_DS");
         }
         break;
         case XL2400P_LOOP_EVENT_MAX_RT:
         {
+            wireless_frame_seq++;
             console_printf("wireless: event MAX_RT");
         }
         break;
@@ -56,7 +63,9 @@ void xl2400p_loop_data_handler(uint8_t *data,size_t datalen,uint8_t px)
                 break;
             }
         }
-        if(datalen==32)
+        service_wireless_frame_header_t header= {0};
+        memcpy(&header,data,sizeof(header));
+        if(datalen==32 && header.flag.byte==0 && header.crc8==0 && header.seq==0)
         {
             /*
              * 处理上电数据帧
@@ -80,6 +89,42 @@ void xl2400p_loop_data_handler(uint8_t *data,size_t datalen,uint8_t px)
                 }
             }
         }
+        else if((header.flag.byte!=0 || header.crc8!=0 || header.seq!=0) && datalen > sizeof(header))
+        {
+            /*
+             * 处理广播的其它数据
+             */
+            if(header.flag.b_crypt!=0)
+            {
+                //公共通道解密
+                uint32_t packet_header=0;
+                memcpy(&packet_header,data,sizeof(packet_header));
+                product_config_data_chacha20_crypto(&data[sizeof(header)],datalen-sizeof(header),packet_header,NULL,0);
+            }
+            uint8_t buffer[128]= {0};
+            size_t  buffer_len=datalen-sizeof(header);
+            if(header.flag.b_compress!=0)
+            {
+                //对数据进行解压缩
+                buffer_len=product_config_data_uncompress(buffer,sizeof(buffer),&data[sizeof(header)],buffer_len);
+            }
+            else
+            {
+                //直接复制
+                memcpy(buffer,&data[sizeof(header)],buffer_len);
+            }
+            if(buffer_len == 0)
+            {
+                //解压缩出错
+                break;
+            }
+            if(!hcrc_crc8_fast_check(buffer,buffer_len,header.crc8))
+            {
+                //CRC8校验错误
+                break;
+            }
+            console_printf("wireless:boardcast frame!");
+        }
     }
     break;
     default:
@@ -90,11 +135,44 @@ void xl2400p_loop_data_handler(uint8_t *data,size_t datalen,uint8_t px)
     }
 }
 
+size_t  service_wireless_frame_boardcast_generate(service_wireless_frame_t *frame,uint8_t * data,size_t datalen)
+{
+    size_t ret=0;
+    if(frame==NULL || data == NULL || datalen ==0 || datalen > sizeof(frame->data))
+    {
+        return ret;
+    }
+    memset(frame,0,sizeof(service_wireless_frame_t));
+    frame->header.flag.px=0;         //广播时通道必须设置为0
+    frame->header.flag.type=0;       //广播时类型设置为0
+    frame->header.crc8=hcrc_crc8_fast_calculate(data,datalen);
+    frame->header.flag.b_compress=((0!=(ret=product_config_data_try_compress(frame->data,sizeof(frame->data),data,datalen)))?1:0);
+    if(ret==0)
+    {
+        ret=datalen;
+    }
+    frame->header.seq=wireless_frame_seq;
+    //默认都进行加密
+    frame->header.flag.b_crypt=1;
+    if(frame->header.flag.b_crypt!=0)
+    {
+        //进行公共通道的加密
+        uint32_t packet_header=0;
+        memcpy(&packet_header,&frame->header,sizeof(packet_header));
+        product_config_data_chacha20_crypto(frame->data,ret,packet_header,NULL,0);
+    }
+    return ret+sizeof(frame->header);
+};
+
 #ifdef HRUNTIME_USING_INIT_SECTION
 static void  hwireless_init(const hruntime_function_t *func)
 {
     xl2400p_loop_set_event_handler(xl2400p_loop_event_handler);
     xl2400p_loop_set_data_handler(xl2400p_loop_data_handler);
+    console_printf("service_wireless init!");
+    //console_printf("wireless:sizeof(service_wireless_frame_header_t)=%d,sizeof(service_wireless_frame_t)=%d",(int)sizeof(service_wireless_frame_header_t),(int)sizeof(service_wireless_frame_t));
+    hgetrandom(&wireless_frame_seq,sizeof(wireless_frame_seq),0);
+    console_printf("wireless:wireless_frame_seq=%d",(int)wireless_frame_seq);
 }
 HRUNTIME_INIT_EXPORT(wireless,SERVICE_WIRELESS_PRIORITY_LEVEL,hwireless_init,NULL);
 #endif
