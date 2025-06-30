@@ -1037,6 +1037,56 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_tlsf_tlsf.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_addresses.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_addresses.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_check.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_check.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_empty_tree.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_empty_tree.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_overlay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_overlay.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_ro.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_ro.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_rw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_rw.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_strerror.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_strerror.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_sw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_sw.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_fdt_wip.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_wip.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
