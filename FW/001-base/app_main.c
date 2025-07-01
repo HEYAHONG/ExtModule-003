@@ -31,7 +31,7 @@ static void  happ_main_init(const hruntime_function_t *func)
     uart2_set_rx_handler(app_uart_rx_handler);
     service_wireless_frame_boardcast_set_rx_handler(service_wireless_frame_boardcast_rx_handler);
 #endif
-	
+
 }
 HRUNTIME_INIT_EXPORT(app_main,APP_MAIN_PRIORITY_LEVEL,happ_main_init,NULL);
 #endif
