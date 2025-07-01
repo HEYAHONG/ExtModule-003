@@ -9,6 +9,18 @@
  * 发送时的序号
  */
 static uint16_t wireless_frame_seq=0;
+static struct
+{
+    uint32_t tx_busy:1;
+} wireless_state;
+static service_wireless_frame_boardcast_rx_handler_t service_wireless_frame_boardcast_rx_handler=NULL;
+static uint8_t service_wireless_frame_boardcast_ringbuffer[512];
+static hringbuf_t *service_wireless_frame_boardcast_ringbuffer_get(void)
+{
+    hringbuf_t * buffer=hringbuf_get((uint8_t *)service_wireless_frame_boardcast_ringbuffer,sizeof(service_wireless_frame_boardcast_ringbuffer));
+    hringbuf_set_lock(buffer,NULL,NULL,NULL);
+    return buffer;
+}
 
 void xl2400p_loop_event_handler(xl2400p_loop_event_t evt)
 {
@@ -24,12 +36,14 @@ void xl2400p_loop_event_handler(xl2400p_loop_event_t evt)
         case XL2400P_LOOP_EVENT_TX_DS:
         {
             wireless_frame_seq++;
+            wireless_state.tx_busy=0;
             console_printf("wireless: event TX_DS");
         }
         break;
         case XL2400P_LOOP_EVENT_MAX_RT:
         {
             wireless_frame_seq++;
+            wireless_state.tx_busy=0;
             console_printf("wireless: event MAX_RT");
         }
         break;
@@ -123,6 +137,10 @@ void xl2400p_loop_data_handler(uint8_t *data,size_t datalen,uint8_t px)
                 //CRC8校验错误
                 break;
             }
+            if(service_wireless_frame_boardcast_rx_handler!=NULL)
+            {
+                service_wireless_frame_boardcast_rx_handler(buffer,buffer_len);
+            }
             console_printf("wireless:boardcast frame!");
         }
     }
@@ -164,6 +182,16 @@ size_t  service_wireless_frame_boardcast_generate(service_wireless_frame_t *fram
     return ret+sizeof(frame->header);
 };
 
+void service_wireless_frame_boardcast_set_rx_handler(service_wireless_frame_boardcast_rx_handler_t _rx_handler)
+{
+    service_wireless_frame_boardcast_rx_handler=_rx_handler;
+}
+
+size_t service_wireless_frame_boardcast_transmit(uint8_t *data,size_t datalen)
+{
+    return hringbuf_input(service_wireless_frame_boardcast_ringbuffer_get(),data,datalen);
+}
+
 #ifdef HRUNTIME_USING_INIT_SECTION
 static void  hwireless_init(const hruntime_function_t *func)
 {
@@ -177,9 +205,80 @@ static void  hwireless_init(const hruntime_function_t *func)
 HRUNTIME_INIT_EXPORT(wireless,SERVICE_WIRELESS_PRIORITY_LEVEL,hwireless_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
+static void  hwireless_boardcast_tx(void)
+{
+    size_t len=hringbuf_get_length(service_wireless_frame_boardcast_ringbuffer_get());
+    service_wireless_frame_t frame= {0};
+    if(len > sizeof(frame.data))
+    {
+        len=sizeof(frame.data);
+    }
+    uint8_t buffer[sizeof(frame.data)]= {0};
+    hringbuf_output(service_wireless_frame_boardcast_ringbuffer_get(),buffer,len);
+    wireless_state.tx_busy=1;
+    xl2400p_write_tx_fifo_noack(&frame,service_wireless_frame_boardcast_generate(&frame,buffer,len));
+}
 static void  hwireless_loop(const hruntime_function_t *func)
 {
+    if(xl2400p_get_is_prx())
+    {
+        if(hringbuf_get_length(service_wireless_frame_boardcast_ringbuffer_get()) > 0)
+        {
+            xl2400p_set_soft_ce(false);
+            HAL_Delay(1);
+            xl2400p_flush_rx();
+            xl2400p_flush_tx();
+            xl2400p_set_rf_status(0x70);
+            uint8_t address[5]= {0};
+            product_config_public_channel_addr(address,sizeof(address));
+            xl2400p_set_tx_addr(address,sizeof(address));
+            xl2400p_set_rx_addr0(address,sizeof(address));
+            xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL);
+            xl2400p_set_is_prx(false);
+            xl2400p_set_soft_ce(true);
 
+            //发送数据
+            hwireless_boardcast_tx();
+
+        }
+    }
+    else
+    {
+        if(wireless_state.tx_busy==0)
+        {
+            if(hringbuf_get_length(service_wireless_frame_boardcast_ringbuffer_get()) > 0)
+            {
+                xl2400p_flush_rx();
+                xl2400p_flush_tx();
+                xl2400p_set_rf_status(0x70);
+                uint8_t address[5]= {0};
+                product_config_public_channel_addr(address,sizeof(address));
+                xl2400p_set_tx_addr(address,sizeof(address));
+                xl2400p_set_rx_addr0(address,sizeof(address));
+                xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL);
+                xl2400p_set_is_prx(false);
+                xl2400p_set_soft_ce(true);
+
+                //发送数据
+                hwireless_boardcast_tx();
+            }
+            else
+            {
+                xl2400p_set_soft_ce(false);
+                HAL_Delay(1);
+                xl2400p_flush_rx();
+                xl2400p_flush_tx();
+                xl2400p_set_rf_status(0x70);
+                uint8_t address[5]= {0};
+                product_config_public_channel_addr(address,sizeof(address));
+                xl2400p_set_tx_addr(address,sizeof(address));
+                xl2400p_set_rx_addr0(address,sizeof(address));
+                xl2400p_set_channel(XL2400P_DEFAULT_RF_CHANNEL-1);
+                xl2400p_set_is_prx(true);
+                xl2400p_set_soft_ce(true);
+            }
+        }
+    }
 }
 HRUNTIME_LOOP_EXPORT(wireless,SERVICE_WIRELESS_PRIORITY_LEVEL,hwireless_loop,NULL);
 #endif

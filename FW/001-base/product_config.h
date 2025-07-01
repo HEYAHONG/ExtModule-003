@@ -47,6 +47,13 @@ extern "C"
 #endif
 
 /*
+ * 产品启用UART2广播数据包透传(可用于测试)
+ */
+#ifndef PRODUCT_UART2_BOARDCAST
+#define PRODUCT_UART2_BOARDCAST 1
+#endif
+
+/*
  * 获取产品ID(通过产品名称计算得来),通常128位。
  * 可用于区分不同的网络。
  */

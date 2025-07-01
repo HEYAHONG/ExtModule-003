@@ -462,6 +462,11 @@
               <FileType>1</FileType>
               <FilePath>..\service_wireless.c</FilePath>
             </File>
+            <File>
+              <FileName>app_main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app_main.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

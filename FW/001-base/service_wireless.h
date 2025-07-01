@@ -42,6 +42,9 @@ struct service_wireless_frame
  * 生成广播包(数据长度不得超过service_wireless_frame_t中data字段的长度),返回整个包的长度
  */
 size_t  service_wireless_frame_boardcast_generate(service_wireless_frame_t *frame,uint8_t * data,size_t datalen);
+typedef void (*service_wireless_frame_boardcast_rx_handler_t)(uint8_t *data,size_t datalen);
+void service_wireless_frame_boardcast_set_rx_handler(service_wireless_frame_boardcast_rx_handler_t _rx_handler);
+size_t service_wireless_frame_boardcast_transmit(uint8_t *data,size_t datalen);
 
 #ifdef __cplusplus
 }
