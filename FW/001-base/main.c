@@ -52,6 +52,11 @@ int main(void)
     APP_SystemClockConfig();
 
     {
+        //初始化软件虚拟内存全局映射表
+        hsoftwarevirtualmemory_global_map_table=hbox_vm_map;
+    }
+
+    {
         /*
          * 初始化时间为2020-01-01 00:00:00
          * 主要用于初始化随机数
