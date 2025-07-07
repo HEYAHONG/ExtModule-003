@@ -194,3 +194,37 @@ static void  psram_loop(const hruntime_function_t *func)
 HRUNTIME_LOOP_EXPORT(psram,DRV_PSRAM_PRIORITY_LEVEL,psram_loop,NULL);
 #endif
 
+const hmemorystaticallocator_item_t psram_mem_alloc_table[]=
+{
+    {
+        PSRAM_LINK_ADDRESS,
+        PSRAM_NET_ADDRESS-PSRAM_LINK_ADDRESS,
+        1,
+        "link",
+        HMEMORYSTATICALLOCATOR_FLAGS_NO_ALLOC
+    },
+    {
+        PSRAM_NET_ADDRESS,
+        PSRAM_USR_ADDRESS-PSRAM_NET_ADDRESS,
+        1,
+        "net",
+        HMEMORYSTATICALLOCATOR_FLAGS_NO_ALLOC
+    },
+    {
+        PSRAM_USR_ADDRESS,
+        PSRAM_END_ADDRESS-PSRAM_USR_ADDRESS,
+        1,
+        "usr",
+        HMEMORYSTATICALLOCATOR_FLAGS_NO_ALLOC
+    },
+    {
+        PSRAM_END_ADDRESS,
+        0,
+        0,
+        "end",
+        HMEMORYSTATICALLOCATOR_FLAGS_NO_ALLOC
+    },
+};
+
+const hmemorystaticallocator_item_t * const psram_alloc_table=psram_mem_alloc_table;
+

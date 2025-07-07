@@ -2,6 +2,8 @@
 #define __DRV_PSRAM_H__
 #include "stdint.h"
 #include "stdlib.h"
+#include "main.h"
+#include "hbox.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -37,6 +39,12 @@ enum
     PSRAM_USR_ADDRESS=   0x00400000,
     PSRAM_END_ADDRESS=   0x00800000,
 };
+
+/*
+ * PSRAM·ÖÇø·ÖÅä
+ */
+extern const hmemorystaticallocator_item_t * const psram_alloc_table;
+
 
 #ifdef __cplusplus
 }
