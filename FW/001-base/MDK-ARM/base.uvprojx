@@ -1092,6 +1092,46 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_fdt_wip.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_croutine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_croutine.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_event_groups.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_event_groups.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_heap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_heap.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_list.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_stream_buffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_stream_buffer.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_tasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_tasks.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_freertos_kernel_timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_timers.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
