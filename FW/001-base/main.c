@@ -51,6 +51,16 @@ int main(void)
     /* Configure the system clock */
     APP_SystemClockConfig();
 
+    /*
+    * 更新时钟
+    */
+    SystemCoreClockUpdate();
+
+    /*
+     * 重新初始化时钟节拍
+     */
+    HAL_InitTick(TICK_INT_PRIORITY);
+
     {
         //初始化软件虚拟内存全局映射表
         hsoftwarevirtualmemory_global_map_table=hbox_vm_map;
