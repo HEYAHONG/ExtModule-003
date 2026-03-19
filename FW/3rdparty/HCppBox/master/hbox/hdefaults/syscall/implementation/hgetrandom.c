@@ -17,17 +17,15 @@
 #define HDEFAULTS_SYSCALL_HGETRANDOM  HDEFAULTS_OS_FREEBSD_SYSCALL_getrandom
 #endif
 
-#if defined(HDEFAULTS_OS_EMSCRIPTEN) && !defined(HGETRANDOM)
-/*
- * Emscripten 默认不支持链接此系统调用
- */
-#undef HDEFAULTS_SYSCALL_HGETRANDOM
-#endif // HDEFAULTS_OS_EMSCRIPTEN
 
 #ifdef HDEFAULTS_SYSCALL_HGETRANDOM
 
 #if defined(HDEFAULTS_OS_UNIX)
 #include <sys/random.h>
+#endif
+
+#if defined(HDEFAULTS_OS_WINDOWS)
+#include "wincrypt.h"
 #endif
 
 #if defined(HGETRANDOM)
@@ -39,35 +37,26 @@ HDEFAULTS_USERCALL_DEFINE3(hgetrandom,HDEFAULTS_SYSCALL_HGETRANDOM,hgetrandom_ss
     hgetrandom_ssize_t ret=-1;
 #if defined(HGETRANDOM)
     ret=HGETRANDOM(buffer,length,flags);
-#elif defined(HDEFAULTS_OS_UNIX) && !(defined(HDEFAULTS_OS_ANDROID)) && (!defined(HDEFAULTS_LIBC_UCLIBC))
+#elif defined(HDEFAULTS_OS_UNIX) && !(defined(HDEFAULTS_OS_ANDROID)) && (!defined(HDEFAULTS_LIBC_UCLIBC) && !defined(HDEFAULTS_OS_EMSCRIPTEN))
     ret=getrandom(buffer,length,flags);
-#else
+#elif defined(HDEFAULTS_OS_WINDOWS)
     {
-        static bool is_random_init=false;
-        if(!is_random_init)
+        HCRYPTPROV hCryptProv;
+        if(CryptAcquireContext(&hCryptProv,NULL,NULL,PROV_RSA_FULL,CRYPT_VERIFYCONTEXT))
         {
-            //使用当前时间作为随机数种子
-            hgettimeofday_timeval_t tv= {0};
-            hgettimeofday(&tv,NULL);
-            if((tv.tv_usec+tv.tv_sec)!=0)
+            if(CryptGenRandom(hCryptProv,length,(BYTE *)buffer))
             {
-                srand(tv.tv_sec+tv.tv_usec);
-                is_random_init=true;
-            }
-        }
-        {
-            //使用C库随机数函数
-            uint8_t *buffer_array=(uint8_t *)buffer;
-            if(buffer_array!=NULL)
-            {
-                for(size_t i=0; i<length; i++)
-                {
-                    buffer_array[i]=rand()%0x100;
-                }
                 ret=length;
             }
+            CryptReleaseContext(hCryptProv,0);
         }
     }
+#elif  !defined(HSYSCALL_NO_IMPLEMENTATION) && !defined(HSYSCALL_NO_RANDOM)
+    {
+        ret=hsyscall_getrandom(buffer,length,flags);
+    }
+#else
+
 #endif
     return ret;
 }

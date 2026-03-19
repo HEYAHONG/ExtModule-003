@@ -6,6 +6,9 @@
  * Copyright: HYH (hyhsystem.cn)
  * License:   MIT
  **************************************************************/
+
+#define H3RDPARTY_CJSON_IMPLEMENTATION  1
+
 #include "hdefaults.h"
 #include "h3rdparty.h"
 
@@ -15,7 +18,17 @@
 #define calloc hcalloc
 #define realloc hrealloc
 
+
+
 #ifndef  H3RDPARTY_USING_SYSTEM_CJSON
+
+/*
+ * 隐藏cJSON符号
+ */
+#ifndef  CJSON_HIDE_SYMBOLS
+#define  CJSON_HIDE_SYMBOLS 1
+#endif
+
 #ifdef __ARMCC_VERSION
 #ifdef __GNUC__
 #undef __GNUC__

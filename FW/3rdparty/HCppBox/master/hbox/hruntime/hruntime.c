@@ -28,36 +28,36 @@ enum
     HRUNTIME_INTERNAL_FLAG_END
 };
 
-static uint8_t hruntime_internal_flag[(((size_t)HRUNTIME_INTERNAL_FLAG_END)+7)/8]= {0};
+static hatomic_int_t hruntime_internal_flag[(((size_t)HRUNTIME_INTERNAL_FLAG_END)+sizeof(hatomic_int_t)*8-1)/(sizeof(hatomic_int_t)*8)]= {0};
 
 static void hruntime_internal_flag_set(size_t flag)
 {
-    size_t flag_byte=flag/8;
-    size_t flag_bit=flag%8;
-    if(flag_byte < sizeof(hruntime_internal_flag))
+    size_t flag_word=flag/(sizeof(hatomic_int_t)*8);
+    size_t flag_bit=flag%(sizeof(hatomic_int_t)*8);
+    if(flag_word < sizeof(hruntime_internal_flag)/sizeof(hruntime_internal_flag[0]))
     {
-        hruntime_internal_flag[flag_byte] |= (1 << flag_bit);
+        hatomic_int_fetch_or(&hruntime_internal_flag[flag_word],(1UL << flag_bit));
     }
 }
 
 static void hruntime_internal_flag_clear(size_t flag)
 {
-    size_t flag_byte=flag/8;
-    size_t flag_bit=flag%8;
-    if(flag_byte < sizeof(hruntime_internal_flag))
+    size_t flag_word=flag/(sizeof(hatomic_int_t)*8);
+    size_t flag_bit=flag%(sizeof(hatomic_int_t)*8);
+    if(flag_word < sizeof(hruntime_internal_flag)/sizeof(hruntime_internal_flag[0]))
     {
-        hruntime_internal_flag[flag_byte] &= (~(1 << flag_bit));
+        hatomic_int_fetch_and(&hruntime_internal_flag[flag_word],(~(1UL << flag_bit)));
     }
 }
 
 static bool hruntime_internal_flag_is_set(size_t flag)
 {
     bool ret=false;
-    size_t flag_byte=flag/8;
-    size_t flag_bit=flag%8;
-    if(flag_byte < sizeof(hruntime_internal_flag))
+    size_t flag_word=flag/(sizeof(hatomic_int_t)*8);
+    size_t flag_bit=flag%(sizeof(hatomic_int_t)*8);
+    if(flag_word < sizeof(hruntime_internal_flag)/sizeof(hruntime_internal_flag[0]))
     {
-        ret=(0!=(hruntime_internal_flag[flag_byte] & (1 << flag_bit)));
+        ret=(0!=(((unsigned)hatomic_int_load(&hruntime_internal_flag[flag_word])) & (1UL << flag_bit)));
     }
     return ret;
 }
@@ -70,10 +70,17 @@ void hruntime_init_lowlevel()
         return;
     }
 
+#ifndef HRUNTIME_NO_H3RDPARTY
     /*
      * 初始化第三方库
      */
     h3rdparty_init();
+#endif // HRUNTIME_NO_H3RDPARTY
+
+
+#ifndef HRUNTIME_NO_HDEFAULTS
+    hdefaults_init();
+#endif // HRUNTIME_NO_HDEFAULTS
 
     //标记初始化完成
     hruntime_internal_flag_set(HRUNTIME_INTERNAL_FLAG_LOWLEVEL_INIT_DONE);
@@ -111,7 +118,7 @@ void hruntime_init()
         }
     }
 
-#if defined(HSOFTPLC)
+#if defined(HSOFTPLC) && !defined(HRUNTIME_NO_SOFTPLC)
     hsoftplc_init();
 #endif
 
@@ -197,18 +204,19 @@ void hruntime_loop()
     }
 #endif // HRUNTIME_NO_SOFTWATCHDOG
 
-#if !defined(HDEFAULTS_SYSCALL_NO_IMPLEMENTATION) && !defined(HDEFAULTS_SYSCALL_NO_HGETTIMEOFDAY) && !defined(HGETTIMEOFDAY)
+#ifndef HRUNTIME_NO_H3RDPARTY
     /*
-     * 调用一次hgettimeofday检查内部变量是否溢出
+     * 第三方库循环
      */
-    {
-        hgettimeofday_timeval_t tv;
-        hgettimeofday_timezone_t tz;
-        hgettimeofday(&tv,&tz);
-    }
-#endif
+    h3rdparty_loop();
+#endif // HRUNTIME_NO_H3RDPARTY
 
-#if defined(HSOFTPLC)
+#ifndef HRUNTIME_NO_HDEFAULTS
+    hdefaults_loop();
+#endif // HRUNTIME_NO_HDEFAULTS
+
+
+#if defined(HSOFTPLC) && !defined(HRUNTIME_NO_SOFTPLC)
     hsoftplc_loop();
 #endif
 
@@ -712,3 +720,96 @@ const hruntime_symbol_t *hruntime_symbol_dynamic_find(const char *name)
     hdefaults_mutex_unlock(NULL);
     return ret;
 }
+
+size_t hruntime_symbol_enum(uint32_t type,hruntime_symbol_enum_callback_t callback,void *usr)
+{
+    size_t ret=0;
+    if((type&HRUNTIME_SYMBOL_ENUM_TYPE_TABLE)!=0)
+    {
+#ifdef HRUNTIME_USING_SYMBOL_TABLE
+        for(size_t i=0; i<sizeof(hruntime_symbol_array_list)/sizeof(hruntime_symbol_array_list[0]); i++)
+        {
+            const hruntime_symbol_t *   array_base=hruntime_symbol_array_list[i].array_base;
+            size_t                      array_size=hruntime_symbol_array_list[i].array_size;
+            if(array_base!=NULL && array_size!=0)
+            {
+                for(size_t i=0; i<array_size; i++)
+                {
+                    if(array_base[i].symbol_name!=NULL)
+                    {
+                        ret++;
+                        if(callback!=NULL)
+                        {
+                            callback(HRUNTIME_SYMBOL_ENUM_TYPE_TABLE,&array_base[i],usr);
+                        }
+                    }
+                }
+            }
+        }
+#endif
+    }
+    if((type&HRUNTIME_SYMBOL_ENUM_TYPE_TABLE_DYNAMIC)!=0)
+    {
+        if(!hdoublylinkedlist_is_empty(&hruntime_symbol_dynamic_table_list_head))
+        {
+            //获取真正的链表头
+            hdoublylinkedlist_head_t *list_head=hruntime_symbol_dynamic_table_list_head.next;
+            hdefaults_mutex_lock(NULL);
+            HDOUBLYLINKEDLIST_FOREACH(list_head,list_item)
+            {
+                const hruntime_symbol_dynamic_table_list_item_t * temp=GET_STRUCT_PTR_BY_MEMBER_PTR(list_item,hruntime_symbol_dynamic_table_list_item_t,list_head);
+                if(temp!=NULL && temp->table_start!=NULL && temp->table_size!=0)
+                {
+                    for(size_t i=0; i< temp->table_size; i++)
+                    {
+                        if(temp->table_start[i].symbol_name!=NULL)
+                        {
+                            ret++;
+                            if(callback!=NULL)
+                            {
+                                callback(HRUNTIME_SYMBOL_ENUM_TYPE_TABLE_DYNAMIC,&temp->table_start[i],usr);
+                            }
+                        }
+                    }
+                }
+            }
+            hdefaults_mutex_unlock(NULL);
+        }
+    }
+    if((type&HRUNTIME_SYMBOL_ENUM_TYPE_TABLE_SECTION)!=0)
+    {
+        const hruntime_symbol_t *   array_base=NULL;
+        size_t                      array_size=0;
+#ifdef HRUNTIME_USING_SYMBOL_SECTION
+#if defined(HCOMPILER_ARMCC) || defined(HCOMPILER_ARMCLANG)
+        {
+            array_base=(hruntime_symbol_t *)&HRuntimeLoop$$Base;
+            array_size=(((uintptr_t)(hruntime_symbol_t *)&HRuntimeLoop$$Limit)-((uintptr_t)(hruntime_symbol_t *)&HRuntimeLoop$$Base))/sizeof(hruntime_symbol_t);
+        }
+#elif  defined(HCOMPILER_GCC) || defined(HCOMPILER_CLANG)
+        {
+            array_base=__hruntime_symbol_start;
+            array_size=(((uintptr_t)__hruntime_symbol_end)-((uintptr_t)__hruntime_symbol_start))/sizeof(hruntime_symbol_t);
+        }
+#endif
+#endif // HRUNTIME_USING_SYMBOL_SECTION
+        if(array_base!=NULL && array_size!=0)
+        {
+            for(size_t i=0; i<array_size; i++)
+            {
+                if(array_base[i].symbol_name!=NULL)
+                {
+                    ret++;
+                    if(callback!=NULL)
+                    {
+                        callback(HRUNTIME_SYMBOL_ENUM_TYPE_TABLE_SECTION,&array_base[i],usr);
+                    }
+                }
+            }
+        }
+    }
+    return ret;
+}
+
+
+#include "version/hruntime_version.c"

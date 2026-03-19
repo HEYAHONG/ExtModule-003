@@ -15,6 +15,11 @@
 #include "stdbool.h"
 #include "stdarg.h"
 
+/*
+ * 通用选项
+ */
+#include "hdefaults_libc_common.h"
+
 //判断Libc
 
 //newlib
@@ -71,6 +76,14 @@
 #ifndef HDEFAULTS_LIBC_UCLIBC
 #define HDEFAULTS_LIBC_UCLIBC 1
 #endif // HDEFAULTS_LIBC_UCLIBC
+#endif
+
+//android_ndk
+#ifdef __ANDROID_NDK__
+#include "hdefaults_libc_androidndk.h"
+#ifndef HDEFAULTS_LIBC_ANDROIDNDK
+#define HDEFAULTS_LIBC_ANDROIDNDK 1
+#endif // HDEFAULTS_LIBC_ANDROIDNDK
 #endif
 
 //armclib

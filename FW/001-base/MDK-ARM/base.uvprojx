@@ -10,7 +10,7 @@
       <TargetName>base</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6130001::V6.13.1::.\ARMCLANG</pCCUsed>
+      <pCCUsed>6240000::V6.24::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -185,6 +185,8 @@
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
             <RvdsMve>0</RvdsMve>
+            <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -351,7 +353,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
+            <ClangAsOpt>4</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -1137,6 +1139,186 @@
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_freertos_kernel_timers.c</FilePath>
             </File>
+            <File>
+              <FileName>h3rdparty_cjson_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_cjson_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libfdt_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libfdt_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_libqrencode_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_libqrencode_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_lz4_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_lz4_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_pb_port_msg_main_entry.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_pb_port_msg_main_entry.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_tlsf_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_tlsf_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriCommon.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriCommon.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriCompare.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriCompare.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriCopy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriCopy.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriEscape.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriEscape.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriFile.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriIp4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriIp4.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriIp4Base.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriIp4Base.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriMemory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriMemory.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriNormalize.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriNormalize.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriNormalizeBase.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriNormalizeBase.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriParse.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriParse.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriParseBase.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriParseBase.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriQuery.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriQuery.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriRecompose.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriRecompose.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriResolve.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriResolve.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetFragment.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetFragment.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetHostAuto.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetHostAuto.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetHostCommon.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetHostCommon.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetHostIp4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetHostIp4.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetHostIp6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetHostIp6.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetHostIpFuture.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetHostIpFuture.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetHostRegName.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetHostRegName.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetPath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetPath.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetPort.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetPort.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetQuery.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetQuery.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetScheme.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetScheme.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriSetUserInfo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriSetUserInfo.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriShorten.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriShorten.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_UriVersion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_UriVersion.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_zlib_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_zlib_port.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1245,7 +1427,7 @@
                 <NoWarn>2</NoWarn>
                 <uSurpInc>2</uSurpInc>
                 <useXO>2</useXO>
-                <uClangAs>2</uClangAs>
+                <ClangAsOpt>0</ClangAsOpt>
                 <VariousControls>
                   <MiscControls></MiscControls>
                   <Define></Define>

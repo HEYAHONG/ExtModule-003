@@ -6,6 +6,9 @@
  * Copyright: HYH (hyhsystem.cn)
  * License:   MIT
  **************************************************************/
+
+#define HMEMORY_IMPLEMENTATION  1
+
 #include "hmemory.h"
 
 /*
@@ -44,3 +47,8 @@
  * 静态内存分配
  */
 #include "hmemory/hmemorystaticallocator.c"
+
+/*
+ * 文件描述符
+ */
+#include "hmemory/hfiledescriptor.c"

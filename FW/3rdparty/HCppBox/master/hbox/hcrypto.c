@@ -6,6 +6,9 @@
  * Copyright: HYH (hyhsystem.cn)
  * License:   MIT
  **************************************************************/
+
+#define HCRYPTO_IMPLEMENTATION  1
+
 #include "hcrypto.h"
 
 #include "hcrypto/hbignum.c"
@@ -30,4 +33,5 @@
 #include "hcrypto/hecdsa.c"
 #include "hcrypto/heddsa.c"
 #include "hcrypto/hrsa.c"
+#include "hcrypto/hrng.c"
 

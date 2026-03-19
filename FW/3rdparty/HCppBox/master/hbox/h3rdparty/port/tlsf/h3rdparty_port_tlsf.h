@@ -9,6 +9,7 @@
 #ifndef __H3RDPARTY_PORT_TLSF_H_INCLUDE__
 #define __H3RDPARTY_PORT_TLSF_H_INCLUDE__
 
+
 /*
  * 引入tlsf库,用户需要手动引入相应头文件
  */
@@ -22,6 +23,7 @@
 #endif
 #endif
 
+#include "htlsf.h"
 
 
 #endif // __H3RDPARTY_PORT_TLSF_H_INCLUDE__

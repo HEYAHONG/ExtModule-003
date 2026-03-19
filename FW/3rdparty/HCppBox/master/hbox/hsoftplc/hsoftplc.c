@@ -22,14 +22,19 @@
 #include "hdefaults/hdefaults_baseapi.h"
 
 /*
- * 引入hgettimeofday
+ * 引入hsyscall_gettimeofday
  */
-#include "hdefaults/syscall/wrapper/hgettimeofday.h"
+#include "hdefaults/syscall/hsyscall/time/hsyscall_time.h"
+
+/*
+ * 引入hclock_gettime
+ */
+#include "hdefaults/syscall/wrapper/hclock_gettime.h"
 
 /*
  * 引入hstrcmp
  */
-#include "hdefaults/libc/wrapper/hstrcmp.h"
+#include "hdefaults/libc/wrapper/string/hstrcmp.h"
 
 #if defined(HSOFTPLC)
 #include "h3rdparty/3rdparty/matiec_c_header/iec_types_all.h"
@@ -41,7 +46,7 @@ extern void config_init__(void);
 extern void config_run__(unsigned long tick);
 
 /*
- * matiec生成的节拍间隔(us)
+ * matiec生成的节拍间隔(ns)
  */
 extern unsigned long long common_ticktime__;
 extern unsigned long greatest_tick_count__;
@@ -111,23 +116,38 @@ void hsoftplc_init(void)
 }
 
 
-
 void hsoftplc_loop(void)
 {
 #if defined(HSOFTPLC)
+#if defined(HSOFTPLC_LOOP_CHECK_TIMEOUT)
+    if(HSOFTPLC_LOOP_CHECK_TIMEOUT(common_ticktime__))
+    {
+#else
     static hdefaults_tick_t last_tick=0;
     if(hdefaults_tick_get()-last_tick > common_ticktime__/1000000)
     {
         last_tick=hdefaults_tick_get();
-
+#endif
         {
             /*
              * 更新__CURRENT_TIME
              */
-            hgettimeofday_timeval_t tv;
-            hgettimeofday_timezone_t tz;
-            hgettimeofday(&tv,&tz);
-            update_current_time(tv.tv_sec,tv.tv_usec*1000);
+#if   defined(HSOFTPLC_LOOP_CURRENT_TIME)
+            uint64_t tv_sec=0;
+            uint64_t tv_nsec=0;
+            HSOFTPLC_LOOP_CURRENT_TIME(tv_sec,tv_nsec);
+            update_current_time(tv_sec,tv_nsec);
+#elif !defined(HDEFAULTS_SYSCALL_NO_IMPLEMENTATION) && !defined(HDEFAULTS_SYSCALL_NO_HCLOCK_GETTIME)
+            htimespec_t tp={0};
+            hclock_gettime(HCLOCK_MONOTONIC,&tp);
+            update_current_time(tp.tv_sec,tp.tv_nsec);
+#elif !defined(HSYSCALL_NO_IMPLEMENTATION) && !defined(HSYSCALL_NO_TIME)
+            htimespec_t tp={0};
+            hsyscall_clock_gettime(HCLOCK_MONOTONIC,&tp);
+            update_current_time(tp.tv_sec,tp.tv_nsec);
+#else
+#error      current time must be updated!
+#endif
         }
 
         {
