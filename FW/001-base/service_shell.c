@@ -76,7 +76,7 @@ static void  hbox_shell_init(const hruntime_function_t *func)
     console_printf("console init!");
     console_printf("psram: %d kbytes",psram_size()/1024);
 }
-HRUNTIME_INIT_EXPORT(product,SERVICE_SHELL_PRIORITY_LEVEL,hbox_shell_init,NULL);
+HRUNTIME_INIT_EXPORT(service_shell,SERVICE_SHELL_PRIORITY_LEVEL,hbox_shell_init,NULL);
 #endif
 #ifdef HRUNTIME_USING_LOOP_SECTION
 
@@ -86,7 +86,7 @@ static void  hbox_shell_loop(const hruntime_function_t *func)
     while(hshell_loop(NULL)==0);
 #endif
 }
-HRUNTIME_LOOP_EXPORT(product,SERVICE_SHELL_PRIORITY_LEVEL,hbox_shell_loop,NULL);
+HRUNTIME_LOOP_EXPORT(service_shell,SERVICE_SHELL_PRIORITY_LEVEL,hbox_shell_loop,NULL);
 #endif
 
 #if (PRODUCT_SHELL_ENABLE) > 0
