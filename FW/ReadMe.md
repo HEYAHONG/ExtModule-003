@@ -108,3 +108,4 @@ arm-none-eabi-gcc主要使用采用newlib-nano作为C运行库的工具，本工
 # 固件列表
 
 - [001-base](001-base):基础模板，采用Keil MDK5编译。
+- [001-base_vm](001-base_vm):基础模板(虚拟机)，采用Keil MDK5编译。
