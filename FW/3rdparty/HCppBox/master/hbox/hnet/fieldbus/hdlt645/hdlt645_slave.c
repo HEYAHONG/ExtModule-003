@@ -7,8 +7,14 @@
  * License:   MIT
  **************************************************************/
 
+#include "hdefaults.h"
 #include "hdlt645_slave.h"
 #include "hdlt645_utils.h"
+
+#if defined(HDLT645_SLAVE_EXTERN_SOURCE_FILENAME)
+#include HDLT645_SLAVE_EXTERN_SOURCE_FILENAME
+#endif
+
 
 void hdlt645_slave_io_init(hdlt645_slave_io_t *io,hdlt645_slave_io_cb_timeout_t timeout,hdlt645_slave_io_cb_reply_t reply,void *usr)
 {
@@ -77,7 +83,7 @@ hdlt645_slave_io_status_t hdlt645_slave_io_status(hdlt645_slave_io_t *io)
 
         if(i >= 11)
         {
-            uint8_t datalen=io->buffer[9];
+            uint8_t datalen=io->rx_buffer[9];
             if(datalen > HDLT645_FRAME_DATALENGTH_MAX_WRITE)
             {
                 status=HDLT645_SLAVE_IO_STATUS_ERROR;
@@ -94,7 +100,7 @@ hdlt645_slave_io_status_t hdlt645_slave_io_status(hdlt645_slave_io_t *io)
                 status=HDLT645_SLAVE_IO_STATUS_CKSUM;
                 break;
             }
-            else if(i == 10+datalen+2)
+            else if(i >= 10+datalen+2)
             {
                 status=HDLT645_SLAVE_IO_STATUS_EOF;
                 break;
@@ -152,6 +158,11 @@ size_t hdlt645_slave_io_rx_input(hdlt645_slave_io_t *io,uint8_t *data,size_t dat
     return ret;
 }
 
+#if !defined(HDLT645_SLAVE_IO_CTX_CMD_USR_EXTEND_LIST)
+#define HDLT645_SLAVE_IO_CTX_CMD_USR_EXTEND_LIST
+#endif
+
+
 #if !defined(HDLT645_SLAVE_TIME_SYNC)
 #include "hdefaults.h"
 
@@ -177,12 +188,10 @@ const hdlt645_slave_time_t hdlt645_slave_time_default=
     0
 };
 
-#if !defined(HDLT645_SLAVE_IO_CTX_CMD_USR_EXTEND_LIST)
-#define HDLT645_SLAVE_IO_CTX_CMD_USR_EXTEND_LIST
-#endif
-
 #define HDLT645_SLAVE_TIME_SYNC (&hdlt645_slave_time_default)
 #endif
+
+
 
 #if !defined(HDLT645_SLAVE_DI_TABLE)
 #define HDLT645_SLAVE_DI_TABLE NULL
@@ -329,7 +338,7 @@ void hdlt645_slave_io_ctx_process_io(hdlt645_slave_io_ctx_t *ctx,hdlt645_slave_i
             return;
         }
 
-        if(hdlt645_bcd_addr_match(frame_addr,&public_bcd_addr))
+        if(hdlt645_bcd_addr_match(frame_addr,&public_bcd_addr) && frame_addr->A[5] != HDLT645_FRAME_ADDR_WILDCARD_BYTE)
         {
             reply=false;
         }
@@ -438,7 +447,7 @@ size_t hdlt645_slave_di_count(const hdlt645_slave_di_t *di_table,size_t di_table
         hdlt645_data_di_set(&di_src,di_table[i].di_num);
         hdlt645_data_di_t di_dst;
         hdlt645_data_di_set(&di_dst,di_dst_num);
-        if(!hdlt645_data_di_match(&di_src,&di_src))
+        if(!hdlt645_data_di_match(&di_src,&di_dst))
         {
             continue;
         }
@@ -485,7 +494,7 @@ size_t hdlt645_slave_di_read(const hdlt645_slave_di_t *di_table,size_t di_table_
         hdlt645_data_di_set(&di_src,di_table[i].di_num);
         hdlt645_data_di_t di_dst;
         hdlt645_data_di_set(&di_dst,di_dst_num);
-        if(!hdlt645_data_di_match(&di_src,&di_src))
+        if(!hdlt645_data_di_match(&di_src,&di_dst))
         {
             continue;
         }
@@ -542,7 +551,7 @@ size_t hdlt645_slave_di_write(const hdlt645_slave_di_t *di_table,size_t di_table
         hdlt645_data_di_set(&di_src,di_table[i].di_num);
         hdlt645_data_di_t di_dst;
         hdlt645_data_di_set(&di_dst,di_dst_num);
-        if(!hdlt645_data_di_match(&di_src,&di_src))
+        if(!hdlt645_data_di_match(&di_src,&di_dst))
         {
             continue;
         }
