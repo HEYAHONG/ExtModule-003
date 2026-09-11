@@ -126,7 +126,7 @@ RF_CH寄存器也可写入支持的信道值。
 
 虚拟机可使用兼容mini-rv32ima的固件（暂不兼容Linux），具体见[HCppBox](https://git.hyhsystem.cn/HEYAHONG/HCppBox)的hplatformbox。
 
-默认情况下采用[openblt](https://github.com/feaser/openblt)加载固件，采用xcp_rs232接口，硬件连接控制台串口。
+默认情况下采用[openblt](https://github.com/feaser/openblt)加载固件，采用xcp_rs232接口(不启用校验和)，硬件连接控制台串口。
 
 ## 控制台
 
