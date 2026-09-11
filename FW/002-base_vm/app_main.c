@@ -90,6 +90,7 @@ static void  happ_main_loop(const hruntime_function_t *func)
         {
         case VM_STATE_INIT:
         {
+            hminirv32ima_machine_embed_reset(&vm);
             BootInit();
             vm_state=VM_STATE_LOAD;
             led_set_sys_mask(0xFFFFFFFF);
@@ -113,7 +114,7 @@ static void  happ_main_loop(const hruntime_function_t *func)
         {
             static hdefaults_tick_t core_tick=0;
             hdefaults_tick_t current_tick=hdefaults_tick_get();
-            int code=hminirv32ima_machine_embed_step(&vm,(current_tick-core_tick)*1000,1024);
+            int code=hminirv32ima_machine_embed_step(&vm,(current_tick-core_tick)*1000,4096);
             core_tick=current_tick;
             if(code != 0 && code != 1)
             {
