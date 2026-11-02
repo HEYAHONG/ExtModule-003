@@ -73,6 +73,13 @@
 #define PRINTF_DISABLE_SUPPORT_PTRDIFF_T   1
 
 /*
+ * 关闭部分不兼容的syscall
+ */
+#define HDEFAULTS_SYSCALL_NO_HMKDIR 1
+#define HDEFAULTS_SYSCALL_NO_HFSYNC 1
+
+
+/*
  * 默认软件虚拟内存
  */
 struct hsoftwarevirtualmemory_map_item;

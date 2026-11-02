@@ -49,6 +49,13 @@
 #define HGETCHAR hbox_console_getchar
 
 /*
+ * 关闭部分不兼容的syscall
+ */
+#define HDEFAULTS_SYSCALL_NO_HMKDIR 1
+#define HDEFAULTS_SYSCALL_NO_HFSYNC 1
+
+
+/*
  * 配置openblt
  */
 #define HOPENBLT_NVM_NO_IMPLEMENTATION 1
