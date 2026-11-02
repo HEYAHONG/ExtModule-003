@@ -169,19 +169,27 @@ size_t hdlt645_slave_io_rx_input(hdlt645_slave_io_t *io,uint8_t *data,size_t dat
 void hdlt645_slave_time_sync_default(const hdlt645_slave_time_t *time,uint8_t ss,uint8_t mm,uint8_t hh,uint8_t DD,uint8_t MM,uint8_t YY)
 {
     htimeval_t tv= {0};
+    hgettimeofday(&tv,NULL);
     {
         htm_t tm= {0};
+        htime_t current_time=tv.tv_sec;
+        hlibc_localtime_r(&current_time,&tm);
+        if(tm.tm_year+1900 < 2000)
+        {
+            tm.tm_year=2000-1900;
+        }
         tm.tm_sec=hdlt645_bcd_to_uint64(ss);
         tm.tm_min=hdlt645_bcd_to_uint64(mm);
         tm.tm_hour=hdlt645_bcd_to_uint64(hh);
         tm.tm_mday=hdlt645_bcd_to_uint64(DD);
         tm.tm_mon=hdlt645_bcd_to_uint64(MM)-1;
-        tm.tm_year=hdlt645_bcd_to_uint64(YY)+2000;
+        tm.tm_year=((unsigned)tm.tm_year)/100*100+hdlt645_bcd_to_uint64(YY);
         tv.tv_sec=hlibc_mktime(&tm);
     }
     hsettimeofday(&tv,NULL);
 }
 
+HDEFAULTS_RO_ATTRIBUTE
 const hdlt645_slave_time_t hdlt645_slave_time_default=
 {
     hdlt645_slave_time_sync_default,
@@ -234,7 +242,13 @@ const hdlt645_slave_time_t hdlt645_slave_time_default=
 #define HDLT645_SLAVE_CLEAR NULL
 #endif
 
+#ifdef __ARMCC_VERSION
+#ifndef __clang__
+#pragma diag_suppress 1296
+#endif
+#endif // __ARMCC_VERSION
 
+HDEFAULTS_RO_ATTRIBUTE
 static const hdlt645_slave_io_ctx_cmd_t hdlt645_slave_io_ctx_cmd_default[]=
 {
     HDLT645_SLAVE_IO_CTX_CMD_USR_EXTEND_LIST
@@ -328,7 +342,7 @@ void hdlt645_slave_io_ctx_process_io(hdlt645_slave_io_ctx_t *ctx,hdlt645_slave_i
          * 检查地址
          */
         hdlt645_bcd_addr_t public_bcd_addr;
-        hdlt645_bcd_addr_set(&public_bcd_addr,HDLT645_FRAME_BOARDCAST_BCD_ADDR);
+        hdlt645_bcd_addr_set(&public_bcd_addr,HDLT645_FRAME_BROADCAST_BCD_ADDR);
 
         hdlt645_bcd_addr_t *frame_addr=hdlt645_frame_get_bcd_addr(frame,frame_len);
 
@@ -624,7 +638,41 @@ bool hdlt645_slave_io_ctx_cmd_read_process(hdlt645_slave_io_ctx_t *ctx,hdlt645_s
 
     if(datalen >= 5)
     {
-        index=data[4];
+        if(di_table != NULL)
+        {
+            for(size_t i=0; i<di_table_len; i++)
+            {
+                if(di_table[i].set_n!=NULL)
+                {
+                    hdlt645_data_di_t di_dst;
+                    hdlt645_data_di_set(&di_dst,di_table[i].di_num);
+                    if(!hdlt645_data_di_match(di_src,&di_dst))
+                    {
+                        continue;
+                    }
+                    di_table[i].set_n(&di_table[i],data[4]);
+                }
+            }
+        }
+    }
+    else
+    {
+        if(di_table != NULL)
+        {
+            for(size_t i=0; i<di_table_len; i++)
+            {
+                if(di_table[i].unset_n!=NULL)
+                {
+                    hdlt645_data_di_t di_dst;
+                    hdlt645_data_di_set(&di_dst,di_table[i].di_num);
+                    if(!hdlt645_data_di_match(di_src,&di_dst))
+                    {
+                        continue;
+                    }
+                    di_table[i].unset_n(&di_table[i]);
+                }
+            }
+        }
     }
 
     if(datalen >=10)
@@ -653,7 +701,7 @@ bool hdlt645_slave_io_ctx_cmd_read_process(hdlt645_slave_io_ctx_t *ctx,hdlt645_s
         {
             for(size_t i=0; i<di_table_len; i++)
             {
-                if(di_table[i].set_time!=NULL)
+                if(di_table[i].reset_time!=NULL)
                 {
                     hdlt645_data_di_t di_dst;
                     hdlt645_data_di_set(&di_dst,di_table[i].di_num);
@@ -696,17 +744,72 @@ bool hdlt645_slave_io_ctx_cmd_read_process(hdlt645_slave_io_ctx_t *ctx,hdlt645_s
 
 bool hdlt645_slave_io_ctx_cmd_readext_process(hdlt645_slave_io_ctx_t *ctx,hdlt645_slave_io_t *io,const hdlt645_slave_io_ctx_cmd_t *cmd,uint8_t *data,size_t datalen,uint8_t *reply_buffer,size_t reply_buffer_len)
 {
-    if(ctx==NULL || io == NULL || cmd == NULL || data == NULL || datalen < 4 || reply_buffer == NULL || reply_buffer_len < 12)
+    if(ctx==NULL || io == NULL || cmd == NULL || data == NULL || datalen < 4 || reply_buffer == NULL || reply_buffer_len < 12+4)
     {
         return false;
+    }
+
+    const hdlt645_slave_di_t *di_table=(const hdlt645_slave_di_t *)cmd->usr[0];
+    size_t di_table_len=cmd->usr[1];
+    size_t reply_data_buffer_len=reply_buffer_len-12-4;
+    uint8_t *reply_data_buffer=&(hdlt645_frame_get_data(reply_buffer,reply_buffer_len)[4]);
+    hdlt645_data_di_t *reply_di=(hdlt645_data_di_t *)&(hdlt645_frame_get_data(reply_buffer,reply_buffer_len)[0]);
+
+    hdlt645_control_t c=hdlt645_control_decode(0);
+
+    c.dir=1;
+
+    c.fct=cmd->fct;
+
+    hdlt645_data_di_t *di_src=(hdlt645_data_di_t *)data;
+    if(reply_di!=NULL)
+    {
+        memcpy(reply_di,di_src,sizeof(*di_src));
+    }
+
+    size_t index=0;
+
+    if(datalen >= 5)
+    {
+        /*
+         * 序号从1开始，一直到255，内部引索从0开始
+         */
+        index=data[4];
+        if(index > 0)
+        {
+            index-=1;
+        }
+    }
+
+    if(hdlt645_slave_di_count(di_table,di_table_len,hdlt645_data_di_get(di_src),reply_data_buffer_len-1) > index+1)
+    {
+        c.ext=1;
     }
 
     bool ret=true;
 
     /*
-     *  在本协议栈中，读后续数据中序号等效于读数据的记录块数。注意：这是非标实现，用户如需其它实现请自行实现处理函数
+     * 读取数据
      */
-    ret=hdlt645_slave_io_ctx_cmd_read_process(ctx,io,cmd,data,datalen,reply_buffer,reply_buffer_len);
+    reply_data_buffer_len=hdlt645_slave_di_read(di_table,di_table_len,hdlt645_data_di_get(di_src),index,reply_data_buffer,reply_data_buffer_len-1);
+
+    /*
+     * 设置序号
+     */
+    reply_data_buffer[reply_data_buffer_len]=index+1;
+
+
+    /*
+     * 设置控制码
+     */
+    (*hdlt645_frame_get_c(reply_buffer,reply_buffer_len))=hdlt645_control_encode(c);
+
+
+    /*
+     * 设置数据长度
+     */
+    size_t l=reply_data_buffer_len+sizeof(*di_src)+1;
+    (*hdlt645_frame_get_datalen(reply_buffer,reply_buffer_len))=l;
 
     return ret;
 }
@@ -783,7 +886,7 @@ bool hdlt645_slave_io_ctx_cmd_write_process(hdlt645_slave_io_ctx_t *ctx,hdlt645_
         {
             for(size_t i=0; i<di_table_len; i++)
             {
-                if(di_table[i].set_time!=NULL)
+                if(di_table[i].write_enable!=NULL)
                 {
                     hdlt645_data_di_t di_dst;
                     hdlt645_data_di_set(&di_dst,di_table[i].di_num);
@@ -808,7 +911,7 @@ bool hdlt645_slave_io_ctx_cmd_write_process(hdlt645_slave_io_ctx_t *ctx,hdlt645_
         {
             for(size_t i=0; i<di_table_len; i++)
             {
-                if(di_table[i].set_time!=NULL)
+                if(di_table[i].write_disable!=NULL)
                 {
                     hdlt645_data_di_t di_dst;
                     hdlt645_data_di_set(&di_dst,di_table[i].di_num);

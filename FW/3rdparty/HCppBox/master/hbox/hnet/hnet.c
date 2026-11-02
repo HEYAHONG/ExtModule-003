@@ -10,4 +10,4 @@
 
 #include "fieldbus/hmodbus.c"
 #include "fieldbus/hdlt645.c"
-
+#include "tcpip/htcpip.c"

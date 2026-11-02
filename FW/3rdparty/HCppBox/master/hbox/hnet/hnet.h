@@ -16,6 +16,7 @@ extern "C"
 
 #include "fieldbus/hmodbus.h"
 #include "fieldbus/hdlt645.h"
+#include "tcpip/htcpip.h"
 
 #ifdef __cplusplus
 }
