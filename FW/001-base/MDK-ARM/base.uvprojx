@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>PY32F030x8</Device>
           <Vendor>Puya</Vendor>
-          <PackID>Puya.PY32F0xx_DFP.1.2.9</PackID>
+          <PackID>Puya.PY32F0xx_DFP.1.2.8</PackID>
           <PackURL>https://www.puyasemi.com/uploadfiles/</PackURL>
           <Cpu>IRAM(0x20000000,0x00002000) IROM(0x08000000,0x00010000) CPUTYPE("Cortex-M0+") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1328,6 +1328,11 @@
               <FileName>h3rdparty_Z80_Z80.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_Z80_Z80.c</FilePath>
+            </File>
+            <File>
+              <FileName>h3rdparty_uriparser_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\3rdparty\HCppBox\master\hbox\h3rdparty\h3rdparty_uriparser_port.c</FilePath>
             </File>
           </Files>
         </Group>
